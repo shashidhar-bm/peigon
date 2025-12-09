@@ -1,0 +1,112 @@
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import { theme } from '../../styles/theme';
+import { ApiResponse, BodyViewMode } from '../../types';
+import { formatJson, copyToClipboard } from '../../utils';
+import { Button } from '../common';
+
+interface BodyViewProps {
+  response: ApiResponse;
+}
+
+const ViewContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+`;
+
+const Toolbar = styled.div`
+  display: flex;
+  gap: ${theme.spacing.sm};
+  padding: ${theme.spacing.md};
+  border-bottom: 1px solid ${theme.colors.border};
+  background: ${theme.colors.backgroundLight};
+`;
+
+const ContentArea = styled.div`
+  flex: 1;
+  overflow: auto;
+  padding: ${theme.spacing.md};
+  background: ${theme.colors.background};
+`;
+
+const CodeBlock = styled.pre`
+  margin: 0;
+  font-family: ${theme.fonts.mono};
+  font-size: ${theme.fontSizes.sm};
+  color: ${theme.colors.textPrimary};
+  white-space: pre-wrap;
+  word-wrap: break-word;
+`;
+
+const EmptyState = styled.div`
+  text-align: center;
+  color: ${theme.colors.textMuted};
+  padding: ${theme.spacing.xl};
+`;
+
+export const BodyView: React.FC<BodyViewProps> = ({ response }) => {
+  const [viewMode, setViewMode] = useState<BodyViewMode>('pretty');
+  const [copySuccess, setCopySuccess] = useState(false);
+
+  const handleCopy = async () => {
+    const content = typeof response.data === 'string' 
+      ? response.data 
+      : formatJson(response.data);
+    
+    const success = await copyToClipboard(content);
+    if (success) {
+      setCopySuccess(true);
+      setTimeout(() => setCopySuccess(false), 2000);
+    }
+  };
+
+  const renderContent = () => {
+    if (!response.data) {
+      return <EmptyState>No response body</EmptyState>;
+    }
+
+    if (typeof response.data === 'string') {
+      return <CodeBlock>{response.data}</CodeBlock>;
+    }
+
+    switch (viewMode) {
+      case 'pretty':
+        return <CodeBlock>{formatJson(response.data)}</CodeBlock>;
+      case 'raw':
+        return <CodeBlock>{JSON.stringify(response.data)}</CodeBlock>;
+      case 'preview':
+        return <CodeBlock>{formatJson(response.data)}</CodeBlock>;
+      default:
+        return <CodeBlock>{formatJson(response.data)}</CodeBlock>;
+    }
+  };
+
+  return (
+    <ViewContainer>
+      <Toolbar>
+        <Button
+          size="small"
+          variant={viewMode === 'pretty' ? 'primary' : 'ghost'}
+          onClick={() => setViewMode('pretty')}
+        >
+          Pretty
+        </Button>
+        <Button
+          size="small"
+          variant={viewMode === 'raw' ? 'primary' : 'ghost'}
+          onClick={() => setViewMode('raw')}
+        >
+          Raw
+        </Button>
+        <div style={{ flex: 1 }} />
+        <Button size="small" variant="secondary" onClick={handleCopy}>
+          {copySuccess ? 'Copied!' : 'Copy'}
+        </Button>
+      </Toolbar>
+      <ContentArea>{renderContent()}</ContentArea>
+    </ViewContainer>
+  );
+};
+
