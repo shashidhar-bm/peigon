@@ -1,6 +1,6 @@
-# Postman Clone - API Testing Tool
+# Peigen - API Testing Tool
 
-A feature-rich API testing tool built with React and TypeScript, inspired by Postman.
+A feature-rich API testing tool built with React and TypeScript.
 
 ## Features
 

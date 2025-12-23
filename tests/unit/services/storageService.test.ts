@@ -29,7 +29,7 @@ describe('StorageService', () => {
       storageService.set('test-key', testData);
 
       expect(localStorage.setItem).toHaveBeenCalledWith(
-        'postman_clone_data_test-key',
+        'peigen_data_test-key',
         JSON.stringify(testData)
       );
     });
@@ -39,7 +39,7 @@ describe('StorageService', () => {
     it('should remove value', () => {
       storageService.remove('test-key');
 
-      expect(localStorage.removeItem).toHaveBeenCalledWith('postman_clone_data_test-key');
+      expect(localStorage.removeItem).toHaveBeenCalledWith('peigen_data_test-key');
     });
   });
 

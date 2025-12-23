@@ -2,7 +2,7 @@
 
 ## Overview
 
-This Postman clone is built with React, TypeScript, and styled-components, following a clean architecture pattern with clear separation of concerns.
+This application is built with React, TypeScript, and styled-components, following a clean architecture pattern with clear separation of concerns.
 
 ## Architecture Layers
 

@@ -1,7 +1,7 @@
 {
-  "name": "postman-clone",
+  "name": "peigen",
   "version": "1.0.0",
-  "description": "A Postman-like API testing tool built with React",
+  "description": "A feature-rich API testing tool built with React",
   "private": true,
   "dependencies": {
     "react": "^18.2.0",

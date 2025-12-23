@@ -4,7 +4,7 @@ describe('Basic Workflow', () => {
   });
 
   it('should load the application', () => {
-    cy.contains('Postman Clone').should('be.visible');
+    cy.contains('Peigen').should('be.visible');
   });
 
   it('should create a new collection', () => {

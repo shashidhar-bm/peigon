@@ -1,4 +1,4 @@
-# Contributing to Postman Clone
+# Contributing to Peigen
 
 Thank you for your interest in contributing to this project!
 

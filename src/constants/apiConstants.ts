@@ -1,9 +1,9 @@
 export const API_CONSTANTS = {
   DEFAULT_TIMEOUT: Number(process.env.REACT_APP_DEFAULT_TIMEOUT) || 30000,
   MAX_HISTORY_SIZE: Number(process.env.REACT_APP_MAX_HISTORY_SIZE) || 50,
-  LOCAL_STORAGE_KEY: process.env.REACT_APP_LOCAL_STORAGE_KEY || 'postman_clone_data',
+  LOCAL_STORAGE_KEY: process.env.REACT_APP_LOCAL_STORAGE_KEY || 'peigen_data',
   APP_VERSION: process.env.REACT_APP_VERSION || '1.0.0',
-  APP_NAME: process.env.REACT_APP_NAME || 'Postman Clone',
+  APP_NAME: process.env.REACT_APP_NAME || 'Peigen',
 } as const;
 
 export const STORAGE_KEYS = {

@@ -19,7 +19,7 @@ export function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T)
   // Listen to storage events from other tabs
   useEffect(() => {
     const handleStorageChange = (event: StorageEvent) => {
-      if (event.key === `postman_clone_data_${key}`) {
+      if (event.key === `peigen_data_${key}`) {
         if (event.newValue) {
           try {
             setStoredValue(JSON.parse(event.newValue));
