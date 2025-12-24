@@ -37,6 +37,20 @@ npm start
 
 The application will open at [http://localhost:3000](http://localhost:3000)
 
+### Running the Test Server (Optional)
+
+A dummy API server is included for testing:
+
+```bash
+cd test-server
+npm install
+npm start
+```
+
+The test server will run on [http://localhost:3001](http://localhost:3001)
+
+See `test-server/README.md` for available API endpoints.
+
 ### Running Tests
 
 ```bash
