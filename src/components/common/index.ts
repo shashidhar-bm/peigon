@@ -1,7 +1,7 @@
-export * from './Button';
-export * from './Input';
-export * from './Textarea';
-export * from './Select';
-export * from './Tabs';
-export * from './Modal';
-
+export { Button } from './Button';
+export { Input } from './Input';
+export { Select } from './Select';
+export { Textarea } from './Textarea';
+export { Modal } from './Modal';
+export { Tabs } from './Tabs';
+export { KeyValuePairList } from './KeyValuePairList';

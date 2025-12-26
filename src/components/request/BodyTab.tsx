@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { theme } from '../../styles/theme';
 import { useRequestContext } from '../../contexts';
 import { BodyType } from '../../types';
-import { Textarea, Select } from '../common';
+import { Textarea, Select, KeyValuePairList } from '../common';
 
 const TabContainer = styled.div`
   padding: ${theme.spacing.md};
@@ -91,6 +91,34 @@ export const BodyTab: React.FC = () => {
             placeholder="Enter raw body content"
             fullWidth
             style={{ flex: 1, minHeight: '200px' }}
+          />
+        );
+
+      case 'urlencoded':
+        return (
+          <KeyValuePairList
+            pairs={currentRequest.body.urlencoded || []}
+            onChange={(pairs) =>
+              updateRequest({
+                body: { ...currentRequest.body, urlencoded: pairs },
+              })
+            }
+            keyPlaceholder="Key"
+            valuePlaceholder="Value"
+          />
+        );
+
+      case 'formData':
+        return (
+          <KeyValuePairList
+            pairs={currentRequest.body.formData || []}
+            onChange={(pairs) =>
+              updateRequest({
+                body: { ...currentRequest.body, formData: pairs },
+              })
+            }
+            keyPlaceholder="Key"
+            valuePlaceholder="Value"
           />
         );
 
