@@ -36,6 +36,7 @@ const Select = styled.select<{ $method: HttpMethod }>`
 export const MethodSelector: React.FC<MethodSelectorProps> = ({ value, onChange }) => {
   return (
     <Select
+      data-testid="method-selector"
       $method={value}
       value={value}
       onChange={(e) => onChange(e.target.value as HttpMethod)}

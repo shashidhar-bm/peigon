@@ -107,6 +107,7 @@ export const BodyTab: React.FC = () => {
     <TabContainer>
       <BodyTypeSelector>
         <Select
+          data-testid="body-type-selector"
           value={currentRequest.body.type}
           onChange={(e) => handleBodyTypeChange(e.target.value as BodyType)}
           options={bodyTypeOptions}

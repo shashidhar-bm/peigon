@@ -11,20 +11,20 @@ describe('Basic Workflow', () => {
     cy.contains('button', 'New Collection').click();
     cy.get('input').first().type('My Test Collection');
     cy.contains('button', 'Create').click();
-    
+
     cy.contains('My Test Collection').should('be.visible');
   });
 
   it('should send a GET request', () => {
-    // Select GET method
-    cy.get('select').first().should('have.value', 'GET');
-    
+    // Wait for and verify GET method is selected by default
+    cy.get('[data-testid="method-selector"]').should('be.visible').and('have.value', 'GET');
+
     // Enter URL
     cy.get('input[type="text"]').first().type('https://jsonplaceholder.typicode.com/users/1');
-    
+
     // Click Send button
     cy.contains('button', 'Send').click();
-    
+
     // Wait for response
     cy.contains('200', { timeout: 10000 }).should('be.visible');
     cy.contains('Body').should('be.visible');
@@ -33,18 +33,18 @@ describe('Basic Workflow', () => {
   it('should switch between tabs', () => {
     cy.contains('button', 'Params').click();
     cy.contains('Add Parameter').should('be.visible');
-    
+
     cy.contains('button', 'Headers').click();
     cy.contains('Add Header').should('be.visible');
-    
+
     cy.contains('button', 'Body').click();
-    cy.contains('None').should('be.visible');
+    cy.contains('This request does not have a body').should('be.visible');
   });
 
   it('should add request parameters', () => {
     cy.contains('button', 'Params').click();
     cy.contains('Add Parameter').click();
-    
+
     cy.get('input[placeholder="Key"]').first().type('userId');
     cy.get('input[placeholder="Value"]').first().type('1');
   });
