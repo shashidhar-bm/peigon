@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { theme } from '../../styles/theme';
 import { ApiResponse } from '../../types';
 import { formatBytes, formatTime, getStatusColorCategory } from '../../utils';
 import { COLORS } from '../../constants';
+import { useComparisonContext } from '../../contexts/ComparisonContext';
+import { Button, Modal, Input } from '../common';
 
 interface StatusBarProps {
   response: ApiResponse;
@@ -48,23 +50,86 @@ const StatValue = styled.span`
   color: ${theme.colors.textPrimary};
 `;
 
+const Actions = styled.div`
+  margin-left: auto;
+  display: flex;
+  gap: ${theme.spacing.sm};
+`;
+
 export const StatusBar: React.FC<StatusBarProps> = ({ response }) => {
+  const { saveCurrentResponse, toggleComparisonMode } = useComparisonContext();
+  const [showSaveModal, setShowSaveModal] = useState(false);
+  const [responseName, setResponseName] = useState('');
+
+  const handleSave = () => {
+    if (responseName.trim()) {
+      saveCurrentResponse(responseName.trim());
+      setResponseName('');
+      setShowSaveModal(false);
+    }
+  };
+
   return (
-    <BarContainer>
-      <StatusBadge $status={response.status}>
-        {response.status} {response.statusText}
-      </StatusBadge>
-      
-      <Stat>
-        <StatLabel>Time</StatLabel>
-        <StatValue>{formatTime(response.responseTime)}</StatValue>
-      </Stat>
-      
-      <Stat>
-        <StatLabel>Size</StatLabel>
-        <StatValue>{formatBytes(response.responseSize)}</StatValue>
-      </Stat>
-    </BarContainer>
+    <>
+      <BarContainer>
+        <StatusBadge $status={response.status}>
+          {response.status} {response.statusText}
+        </StatusBadge>
+
+        <Stat>
+          <StatLabel>Time</StatLabel>
+          <StatValue>{formatTime(response.responseTime)}</StatValue>
+        </Stat>
+
+        <Stat>
+          <StatLabel>Size</StatLabel>
+          <StatValue>{formatBytes(response.responseSize)}</StatValue>
+        </Stat>
+
+        <Actions>
+          <Button
+            variant="secondary"
+            size="small"
+            onClick={() => setShowSaveModal(true)}
+          >
+            Save Response
+          </Button>
+          <Button
+            variant="secondary"
+            size="small"
+            onClick={toggleComparisonMode}
+          >
+            Compare
+          </Button>
+        </Actions>
+      </BarContainer>
+
+      <Modal
+        isOpen={showSaveModal}
+        onClose={() => setShowSaveModal(false)}
+        title="Save Response"
+      >
+        <div style={{ padding: theme.spacing.md }}>
+          <Input
+            label="Response Name"
+            value={responseName}
+            onChange={(e) => setResponseName(e.target.value)}
+            placeholder="e.g., Production User API - Jan 2024"
+            fullWidth
+            autoFocus
+          />
+          <div style={{ marginTop: theme.spacing.md, display: 'flex', gap: theme.spacing.sm, justifyContent: 'flex-end' }}>
+            <Button variant="secondary" onClick={() => setShowSaveModal(false)}>
+              Cancel
+            </Button>
+            <Button variant="primary" onClick={handleSave} disabled={!responseName.trim()}>
+              Save
+            </Button>
+          </div>
+        </div>
+      </Modal>
+    </>
   );
 };
+
 

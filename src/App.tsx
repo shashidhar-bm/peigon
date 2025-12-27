@@ -3,6 +3,7 @@ import { ThemeProvider } from 'styled-components';
 import { theme } from './styles/theme';
 import { GlobalStyles } from './styles/GlobalStyles';
 import { RequestProvider, CollectionProvider, EnvironmentProvider, HistoryProvider } from './contexts';
+import { ComparisonProvider } from './contexts/ComparisonContext';
 import { Header, Sidebar, MainPanel } from './components/layout';
 
 const AppContainer = styled.div`
@@ -26,15 +27,17 @@ function App() {
       <EnvironmentProvider>
         <CollectionProvider>
           <RequestProvider>
-            <HistoryProvider>
-              <AppContainer>
-                <Header />
-                <MainContent>
-                  <Sidebar />
-                  <MainPanel />
-                </MainContent>
-              </AppContainer>
-            </HistoryProvider>
+            <ComparisonProvider>
+              <HistoryProvider>
+                <AppContainer>
+                  <Header />
+                  <MainContent>
+                    <Sidebar />
+                    <MainPanel />
+                  </MainContent>
+                </AppContainer>
+              </HistoryProvider>
+            </ComparisonProvider>
           </RequestProvider>
         </CollectionProvider>
       </EnvironmentProvider>

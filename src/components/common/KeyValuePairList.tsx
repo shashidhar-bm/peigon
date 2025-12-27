@@ -10,7 +10,6 @@ interface KeyValuePairListProps {
     onChange: (pairs: KeyValuePair[]) => void;
     keyPlaceholder?: string;
     valuePlaceholder?: string;
-    showDescription?: boolean;
 }
 
 const ListContainer = styled.div`
@@ -44,7 +43,6 @@ export const KeyValuePairList: React.FC<KeyValuePairListProps> = ({
     onChange,
     keyPlaceholder = 'Key',
     valuePlaceholder = 'Value',
-    showDescription = false,
 }) => {
     const handleAdd = () => {
         const newPair: KeyValuePair = {
