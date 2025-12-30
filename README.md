@@ -1,5 +1,7 @@
 # Peigen - API Testing Tool
 
+[![CI](https://github.com/ShashidharM0118/peigon/actions/workflows/ci.yml/badge.svg)](https://github.com/ShashidharM0118/peigon/actions/workflows/ci.yml)
+
 A feature-rich API testing tool built with React and TypeScript.
 
 ## Features
@@ -69,6 +71,17 @@ npm run test:integration
 # E2E tests
 npm run test:e2e
 ```
+
+## CI/CD
+
+This project uses GitHub Actions for continuous integration. On every pull request and commit to `main`, the following checks run automatically:
+
+- **Lint & Type Check**: ESLint and TypeScript compiler checks
+- **Unit & Integration Tests**: Jest tests with coverage reporting
+- **E2E Tests**: Cypress tests in headless mode
+- **Build**: Production build verification
+
+You can view the workflow status in the [Actions tab](https://github.com/ShashidharM0118/peigon/actions) or by the badge at the top of this README.
 
 ## Project Structure
 

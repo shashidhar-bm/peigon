@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { theme } from '../../styles/theme';
 import { API_CONSTANTS } from '../../constants';
-import { useEnvironmentContext } from '../../contexts';
+import { useEnvironmentContext, useThemeContext } from '../../contexts';
 import { Select } from '../common';
 
 const HeaderContainer = styled.header`
@@ -47,8 +47,33 @@ const EnvironmentSelector = styled.div`
   min-width: 200px;
 `;
 
+const ThemeToggleButton = styled.button`
+  width: 40px;
+  height: 40px;
+  border-radius: ${theme.borderRadius.md};
+  background: ${theme.colors.backgroundDark};
+  border: 1px solid ${theme.colors.border};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all ${theme.transitions.fast};
+  font-size: 20px;
+  
+  &:hover {
+    background: ${theme.colors.backgroundLight};
+    border-color: ${theme.colors.borderDark};
+    transform: scale(1.05);
+  }
+  
+  &:active {
+    transform: scale(0.95);
+  }
+`;
+
 export const Header: React.FC = () => {
   const { environments, currentEnvironment, setCurrentEnvironment } = useEnvironmentContext();
+  const { mode, toggleTheme } = useThemeContext();
 
   const environmentOptions = [
     { value: '', label: 'No Environment' },
@@ -69,8 +94,16 @@ export const Header: React.FC = () => {
             options={environmentOptions}
           />
         </EnvironmentSelector>
+        <ThemeToggleButton
+          onClick={toggleTheme}
+          title={`Switch to ${mode === 'light' ? 'dark' : 'light'} mode`}
+          aria-label={`Switch to ${mode === 'light' ? 'dark' : 'light'} mode`}
+        >
+          {mode === 'light' ? '🌙' : '☀️'}
+        </ThemeToggleButton>
       </Actions>
     </HeaderContainer>
   );
 };
+
 

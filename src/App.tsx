@@ -1,8 +1,8 @@
 import styled from 'styled-components';
-import { ThemeProvider } from 'styled-components';
-import { theme } from './styles/theme';
+import { ThemeProvider as StyledThemeProvider } from 'styled-components';
+import { createTheme } from './styles/theme';
 import { GlobalStyles } from './styles/GlobalStyles';
-import { RequestProvider, CollectionProvider, EnvironmentProvider, HistoryProvider } from './contexts';
+import { RequestProvider, CollectionProvider, EnvironmentProvider, HistoryProvider, ThemeProvider, useThemeContext } from './contexts';
 import { ComparisonProvider } from './contexts/ComparisonContext';
 import { Header, Sidebar, MainPanel } from './components/layout';
 
@@ -20,9 +20,12 @@ const MainContent = styled.div`
   overflow: hidden;
 `;
 
-function App() {
+const AppContent: React.FC = () => {
+  const { mode } = useThemeContext();
+  const theme = createTheme(mode);
+
   return (
-    <ThemeProvider theme={theme}>
+    <StyledThemeProvider theme={theme}>
       <GlobalStyles />
       <EnvironmentProvider>
         <CollectionProvider>
@@ -41,9 +44,18 @@ function App() {
           </RequestProvider>
         </CollectionProvider>
       </EnvironmentProvider>
+    </StyledThemeProvider>
+  );
+};
+
+function App() {
+  return (
+    <ThemeProvider>
+      <AppContent />
     </ThemeProvider>
   );
 }
 
 export default App;
+
 
