@@ -36,9 +36,9 @@ export const RequestBuilder: React.FC = () => {
 
   const handleSend = async () => {
     try {
-      await sendRequest(activeVariables);
+      const response = await sendRequest(activeVariables);
       // Add to history after successful request
-      addToHistory(currentRequest);
+      addToHistory(currentRequest, response);
     } catch (error) {
       console.error('Request failed:', error);
     }

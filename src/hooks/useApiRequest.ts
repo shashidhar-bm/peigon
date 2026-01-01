@@ -6,8 +6,9 @@ interface UseApiRequestResult {
   response: ApiResponse | null;
   error: ResponseError | null;
   isLoading: boolean;
-  sendRequest: (request: ApiRequest, variables?: Record<string, string>) => Promise<void>;
+  sendRequest: (request: ApiRequest, variables?: Record<string, string>) => Promise<ApiResponse>;
   clearResponse: () => void;
+  setResponse: (response: ApiResponse) => void;
 }
 
 export function useApiRequest(): UseApiRequestResult {
@@ -23,8 +24,10 @@ export function useApiRequest(): UseApiRequestResult {
     try {
       const result = await apiService.sendRequest(request, variables);
       setResponse(result);
+      return result;
     } catch (err) {
       setError(err as ResponseError);
+      throw err;
     } finally {
       setIsLoading(false);
     }
@@ -40,7 +43,9 @@ export function useApiRequest(): UseApiRequestResult {
     error,
     isLoading,
     sendRequest,
+    sendRequest,
     clearResponse,
+    setResponse,
   };
 }
 

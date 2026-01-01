@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Button, Modal, Input } from '../common';
-import { useCollectionContext, useHistoryContext } from '../../contexts';
+import { useCollectionContext, useHistoryContext, useRequestContext } from '../../contexts';
 import { CollectionTree } from '../collections/CollectionTree';
 
 const SidebarContainer = styled.aside`
@@ -95,7 +95,8 @@ export const Sidebar: React.FC = () => {
   const [collectionName, setCollectionName] = useState('');
 
   const { createCollection } = useCollectionContext();
-  const { history } = useHistoryContext();
+  const { history, clearHistory } = useHistoryContext();
+  const { setCurrentRequest, setResponse, clearResponse: clearRequestResponse } = useRequestContext();
 
   const handleCreateCollection = () => {
     if (collectionName.trim()) {
@@ -134,6 +135,21 @@ export const Sidebar: React.FC = () => {
               + New Collection
             </Button>
           )}
+
+          {activeTab === 'history' && history.length > 0 && (
+            <Button
+              variant="secondary"
+              size="small"
+              fullWidth
+              onClick={() => {
+                if (window.confirm('Are you sure you want to clear your request history?')) {
+                  clearHistory();
+                }
+              }}
+            >
+              Clear History
+            </Button>
+          )}
         </SidebarHeader>
 
         <SidebarContent>
@@ -145,7 +161,20 @@ export const Sidebar: React.FC = () => {
             ) : (
               <HistoryList>
                 {history.map(entry => (
-                  <HistoryItem key={entry.id}>
+                  <HistoryItem
+                    key={entry.id}
+                    onClick={() => {
+                      // Restore request
+                      setCurrentRequest(entry.request);
+
+                      // Restore response if available
+                      if (entry.response) {
+                        setResponse(entry.response);
+                      } else {
+                        clearRequestResponse();
+                      }
+                    }}
+                  >
                     <HistoryMethod $method={entry.request.method}>
                       {entry.request.method}
                     </HistoryMethod>
