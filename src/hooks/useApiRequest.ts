@@ -43,7 +43,6 @@ export function useApiRequest(): UseApiRequestResult {
     error,
     isLoading,
     sendRequest,
-    sendRequest,
     clearResponse,
     setResponse,
   };

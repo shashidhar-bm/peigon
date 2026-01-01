@@ -8,6 +8,7 @@ import { ParamsTab } from './ParamsTab';
 import { HeadersTab } from './HeadersTab';
 import { BodyTab } from './BodyTab';
 import { AuthTab } from './AuthTab';
+import { SaveRequestModal } from './SaveRequestModal';
 
 const BuilderContainer = styled.div`
   display: flex;
@@ -33,6 +34,7 @@ export const RequestBuilder: React.FC = () => {
   const { currentRequest, updateRequest, sendRequest, isLoading } = useRequestContext();
   const { activeVariables } = useEnvironmentContext();
   const { addToHistory } = useHistoryContext();
+  const [isSaveModalOpen, setIsSaveModalOpen] = React.useState(false);
 
   const handleSend = async () => {
     try {
@@ -87,11 +89,24 @@ export const RequestBuilder: React.FC = () => {
         >
           Send
         </Button>
+        <Button
+          variant="secondary"
+          onClick={() => setIsSaveModalOpen(true)}
+          data-testid="save-request-button"
+        >
+          Save
+        </Button>
       </RequestLine>
 
       <TabsContainer>
         <Tabs tabs={tabs} defaultActiveTab="params" />
       </TabsContainer>
+
+      <SaveRequestModal
+        isOpen={isSaveModalOpen}
+        onClose={() => setIsSaveModalOpen(false)}
+        request={currentRequest}
+      />
     </BuilderContainer>
   );
 };

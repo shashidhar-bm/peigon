@@ -2,7 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { API_CONSTANTS } from '../../constants';
 import { useEnvironmentContext, useThemeContext } from '../../contexts';
-import { Select } from '../common';
+import { Select, Button } from '../common';
+import { EnvironmentModal } from '../environments/EnvironmentModal';
 
 const HeaderContainer = styled.header`
   height: 60px;
@@ -73,11 +74,25 @@ const ThemeToggleButton = styled.button`
 export const Header: React.FC = () => {
   const { environments, currentEnvironment, setCurrentEnvironment } = useEnvironmentContext();
   const { mode, toggleTheme } = useThemeContext();
+  const [isEnvironmentModalOpen, setIsEnvironmentModalOpen] = React.useState(false);
+  const [editingEnvironment, setEditingEnvironment] = React.useState<any>(null); // Type 'any' to avoid import hassle or import Environment
 
   const environmentOptions = [
     { value: '', label: 'No Environment' },
     ...environments.map(env => ({ value: env.id, label: env.name })),
   ];
+
+  const handleNewEnvironment = () => {
+    setEditingEnvironment(null);
+    setIsEnvironmentModalOpen(true);
+  };
+
+  const handleEditEnvironment = () => {
+    if (currentEnvironment) {
+      setEditingEnvironment(currentEnvironment);
+      setIsEnvironmentModalOpen(true);
+    }
+  };
 
   return (
     <HeaderContainer>
@@ -87,12 +102,24 @@ export const Header: React.FC = () => {
       </Logo>
       <Actions>
         <EnvironmentSelector>
-          <Select
-            value={currentEnvironment?.id || ''}
-            onChange={(e) => setCurrentEnvironment(e.target.value || null)}
-            options={environmentOptions}
-          />
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+            <Select
+              value={currentEnvironment?.id || ''}
+              onChange={(e) => setCurrentEnvironment(e.target.value || null)}
+              options={environmentOptions}
+              style={{ minWidth: '150px' }}
+            />
+            <Button size="small" variant="secondary" onClick={handleNewEnvironment}>
+              New Environment
+            </Button>
+            {currentEnvironment && (
+              <Button size="small" variant="secondary" onClick={handleEditEnvironment}>
+                Variables
+              </Button>
+            )}
+          </div>
         </EnvironmentSelector>
+
         <ThemeToggleButton
           onClick={toggleTheme}
           title={`Switch to ${mode === 'light' ? 'dark' : 'light'} mode`}
@@ -101,8 +128,17 @@ export const Header: React.FC = () => {
           {mode === 'light' ? '🌙' : '☀️'}
         </ThemeToggleButton>
       </Actions>
+
+      {isEnvironmentModalOpen && (
+        <EnvironmentModal
+          isOpen={isEnvironmentModalOpen}
+          onClose={() => setIsEnvironmentModalOpen(false)}
+          editingEnvironment={editingEnvironment}
+          onCreated={(env) => {
+            setEditingEnvironment(env);
+          }}
+        />
+      )}
     </HeaderContainer>
   );
 };
-
-

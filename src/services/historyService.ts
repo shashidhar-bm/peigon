@@ -1,7 +1,7 @@
 import { HistoryEntry, ApiRequest, ApiResponse } from '../types';
 import { generateId } from '../utils';
 import { storageService } from './storageService';
-import { STORAGE_KEYS, API_CONSTANTS } from '../constants';
+import { STORAGE_KEYS } from '../constants';
 
 class HistoryService {
   getHistory(): HistoryEntry[] {
@@ -22,7 +22,7 @@ class HistoryService {
     history.unshift(entry);
 
     // Keep only the last N entries
-    const trimmedHistory = history.slice(0, API_CONSTANTS.MAX_HISTORY_SIZE);
+    const trimmedHistory = history.slice(0, 50);
 
     storageService.set(STORAGE_KEYS.HISTORY, trimmedHistory);
   }

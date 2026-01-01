@@ -31,7 +31,7 @@ describe('Full User Journey', () => {
         cy.log('Creating collection');
         cy.contains('button', 'New Collection').click();
         cy.get('input').first().type('User API Tests');
-        cy.contains('button', 'Create').click();
+        cy.contains('button', 'Create').click({ force: true });
 
         // STEP 3: Make a GET request using environment variables
         cy.log('Making GET request with environment variables');

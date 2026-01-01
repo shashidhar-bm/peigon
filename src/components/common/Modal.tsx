@@ -114,10 +114,16 @@ export const Modal: React.FC<ModalProps> = ({
 
   return (
     <Overlay onClick={onClose}>
-      <ModalContainer $size={size} onClick={e => e.stopPropagation()}>
+      <ModalContainer
+        $size={size}
+        onClick={e => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={title ? "modal-title" : undefined}
+      >
         {title && (
           <ModalHeader>
-            <ModalTitle>{title}</ModalTitle>
+            <ModalTitle id="modal-title">{title}</ModalTitle>
             <CloseButton onClick={onClose}>&times;</CloseButton>
           </ModalHeader>
         )}

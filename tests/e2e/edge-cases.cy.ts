@@ -6,7 +6,7 @@ describe('Edge Cases and Error Handling', () => {
     it('should handle empty URL submission', () => {
         // Try to send request with empty URL
         cy.get('input[type="text"]').first().clear();
-        cy.contains('button', 'Send').click();
+        cy.contains('button', 'Send').should('be.disabled');
 
         // Should show validation error or prevent submission
         // The button might be disabled or show an error message
@@ -129,7 +129,7 @@ describe('Edge Cases and Error Handling', () => {
         // Should display error status or error message
         cy.wait(3000);
         // The app might show '500' or 'error' or 'Internal Server Error'
-        cy.get('body').should('contain.text', /500|error|failed/i);
+        cy.get('body').invoke('text').should('match', /500|error|failed/i);
     });
 
     it('should handle 401 unauthorized error', () => {
@@ -139,7 +139,7 @@ describe('Edge Cases and Error Handling', () => {
         // Should display unauthorized status or error message
         cy.wait(3000);
         // The app might show '401' or 'Unauthorized' or 'error'
-        cy.get('body').should('contain.text', /401|unauthorized|error/i);
+        cy.get('body').invoke('text').should('match', /401|unauthorized|error/i);
     });
 
     it('should handle very large response bodies', () => {

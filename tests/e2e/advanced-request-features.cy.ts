@@ -14,11 +14,11 @@ describe('Advanced Request Features', () => {
         cy.get('[data-testid="body-type-selector"]').select('urlencoded');
 
         // Add form fields
-        cy.contains('button', /add field|add parameter/i).click();
+        cy.contains('button', /add key|add parameter/i).click();
         cy.get('input[placeholder*="key" i]').first().type('title');
         cy.get('input[placeholder*="value" i]').first().type('Test Title');
 
-        cy.contains('button', /add field|add parameter/i).click();
+        cy.contains('button', /add key|add parameter/i).click();
         cy.get('input[placeholder*="key" i]').last().type('body');
         cy.get('input[placeholder*="value" i]').last().type('Test Body');
 
@@ -105,8 +105,8 @@ describe('Advanced Request Features', () => {
         cy.get('select').last().select('apiKey');
 
         // Configure API key
-        cy.get('input[placeholder*="key" i]').type('X-API-Key');
-        cy.get('input[placeholder*="value" i]').type('test-api-key-123');
+        cy.get('input[placeholder="Enter key name"]').type('X-API-Key');
+        cy.get('input[placeholder="Enter API key"]').type('test-api-key-123');
 
         // Select where to add (header or query)
         cy.contains(/header|query/i).click();
