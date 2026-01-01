@@ -182,6 +182,7 @@ export const AuthTab: React.FC = () => {
     <TabContainer>
       <AuthTypeSelector>
         <Select
+          data-testid="auth-type-selector"
           value={currentRequest.auth.type}
           onChange={(e) => handleAuthTypeChange(e.target.value as AuthType)}
           options={authTypeOptions}

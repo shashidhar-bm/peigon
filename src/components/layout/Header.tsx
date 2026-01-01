@@ -104,16 +104,17 @@ export const Header: React.FC = () => {
         <EnvironmentSelector>
           <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
             <Select
+              data-testid="environment-selector"
               value={currentEnvironment?.id || ''}
               onChange={(e) => setCurrentEnvironment(e.target.value || null)}
               options={environmentOptions}
               style={{ minWidth: '150px' }}
             />
-            <Button size="small" variant="secondary" onClick={handleNewEnvironment}>
+            <Button data-testid="new-environment-btn" size="small" variant="secondary" onClick={handleNewEnvironment}>
               New Environment
             </Button>
             {currentEnvironment && (
-              <Button size="small" variant="secondary" onClick={handleEditEnvironment}>
+              <Button data-testid="edit-environment-btn" size="small" variant="secondary" onClick={handleEditEnvironment}>
                 Variables
               </Button>
             )}
@@ -134,9 +135,6 @@ export const Header: React.FC = () => {
           isOpen={isEnvironmentModalOpen}
           onClose={() => setIsEnvironmentModalOpen(false)}
           editingEnvironment={editingEnvironment}
-          onCreated={(env) => {
-            setEditingEnvironment(env);
-          }}
         />
       )}
     </HeaderContainer>

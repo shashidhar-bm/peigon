@@ -20,7 +20,7 @@ describe('Basic Workflow', () => {
     cy.get('[data-testid="method-selector"]').should('be.visible').and('have.value', 'GET');
 
     // Enter URL
-    cy.get('input[type="text"]').first().type('https://jsonplaceholder.typicode.com/users/1');
+    cy.get('input[placeholder="Enter request URL"]').type('https://jsonplaceholder.typicode.com/users/1');
 
     // Click Send button
     cy.contains('button', 'Send').click();
@@ -51,7 +51,7 @@ describe('Basic Workflow', () => {
 
   it('should switch environments', () => {
     // Check if environment selector exists
-    cy.get('select').last().should('exist');
+    cy.get('[data-testid="environment-selector"]').should('exist');
   });
 
   it('should view request history', () => {

@@ -8,7 +8,7 @@ describe('Request Creation and Management', () => {
     cy.get('[data-testid="method-selector"]').should('be.visible').select('POST');
 
     // Enter URL
-    cy.get('input[type="text"]').first().type('https://jsonplaceholder.typicode.com/posts');
+    cy.get('input[placeholder="Enter request URL"]').type('https://jsonplaceholder.typicode.com/posts');
 
     // Go to Body tab
     cy.contains('button', 'Body').click();
@@ -42,7 +42,7 @@ describe('Request Creation and Management', () => {
     cy.contains('button', 'Authorization').click();
 
     // Select Bearer Token
-    cy.get('select').last().select('Bearer Token');
+    cy.get('[data-testid="auth-type-selector"]').select('Bearer Token');
 
     // Enter token
     cy.get('input[placeholder*="token"]').type('test-bearer-token-123');

@@ -205,7 +205,7 @@ export const Sidebar: React.FC = () => {
             <CollectionTree />
           ) : (
             history.length === 0 ? (
-              <EmptyState>No request history yet</EmptyState>
+              <EmptyState>No request history</EmptyState>
             ) : (
               <HistoryList>
                 {history.map(entry => (

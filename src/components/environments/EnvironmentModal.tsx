@@ -35,16 +35,14 @@ interface EnvironmentModalProps {
     isOpen: boolean;
     onClose: () => void;
     editingEnvironment?: Environment | null;
-    onCreated?: (env: Environment) => void;
 }
 
 export const EnvironmentModal: React.FC<EnvironmentModalProps> = ({
     isOpen,
     onClose,
     editingEnvironment,
-    onCreated
 }) => {
-    const { createEnvironment, updateEnvironment } = useEnvironmentContext();
+    const { createEnvironment, updateEnvironment, setCurrentEnvironment } = useEnvironmentContext();
     const [name, setName] = useState('');
     const [variables, setVariables] = useState<EnvironmentVariable[]>([]);
 
@@ -64,19 +62,17 @@ export const EnvironmentModal: React.FC<EnvironmentModalProps> = ({
         if (editingEnvironment) {
             updateEnvironment(editingEnvironment.id, { name, variables });
             onClose();
-        } else {
-            const newEnv = createEnvironment(name);
-            if (variables.length > 0) {
-                updateEnvironment(newEnv.id, { variables });
-            }
-
-            if (onCreated) {
-                onCreated(newEnv);
-                // Do not close, switch to edit mode via parent state update
-            } else {
-                onClose();
-            }
+            return;
         }
+
+        const newEnv = createEnvironment(name);
+        if (variables.length > 0) {
+            updateEnvironment(newEnv.id, { variables });
+        }
+
+        // auto-select newly created environment for immediate use
+        setCurrentEnvironment(newEnv.id);
+        onClose();
     };
 
     const handleAddVariable = () => {
@@ -118,6 +114,7 @@ export const EnvironmentModal: React.FC<EnvironmentModalProps> = ({
         >
             <ModalContent>
                 <Input
+                    data-testid="env-name-input"
                     label="Environment Name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
@@ -131,11 +128,13 @@ export const EnvironmentModal: React.FC<EnvironmentModalProps> = ({
                     {variables.map((variable) => (
                         <VariableRow key={variable.id}>
                             <Input
+                                data-testid={`variable-key-${variable.id}`}
                                 placeholder="Key"
                                 value={variable.key}
                                 onChange={(e) => handleVariableChange(variable.id, 'key', e.target.value)}
                             />
                             <Input
+                                data-testid={`variable-value-${variable.id}`}
                                 placeholder="Value"
                                 value={variable.value}
                                 onChange={(e) => handleVariableChange(variable.id, 'value', e.target.value)}
@@ -145,7 +144,7 @@ export const EnvironmentModal: React.FC<EnvironmentModalProps> = ({
                     ))}
                 </VariablesList>
 
-                <Button variant="secondary" size="small" onClick={handleAddVariable}>
+                <Button data-testid="add-variable-btn" variant="secondary" size="small" onClick={handleAddVariable}>
                     + Add Variable
                 </Button>
             </ModalContent>
