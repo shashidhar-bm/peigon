@@ -1,46 +1,45 @@
 import React from 'react';
 import styled from 'styled-components';
-import { theme } from '../../styles/theme';
 import { API_CONSTANTS } from '../../constants';
 import { useEnvironmentContext, useThemeContext } from '../../contexts';
 import { Select } from '../common';
 
 const HeaderContainer = styled.header`
   height: 60px;
-  background: ${theme.colors.background};
-  border-bottom: 1px solid ${theme.colors.border};
+  background: ${({ theme }) => theme.colors.background};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 ${theme.spacing.lg};
+  padding: 0 ${({ theme }) => theme.spacing.lg};
   flex-shrink: 0;
 `;
 
 const Logo = styled.div`
   display: flex;
   align-items: center;
-  gap: ${theme.spacing.md};
+  gap: ${({ theme }) => theme.spacing.md};
 `;
 
 const LogoText = styled.h1`
-  font-size: ${theme.fontSizes.xl};
+  font-size: ${({ theme }) => theme.fontSizes.xl};
   font-weight: 700;
-  color: ${theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primary};
   margin: 0;
 `;
 
 const Version = styled.span`
-  font-size: ${theme.fontSizes.sm};
-  color: ${theme.colors.textMuted};
-  background: ${theme.colors.backgroundDark};
+  font-size: ${({ theme }) => theme.fontSizes.sm};
+  color: ${({ theme }) => theme.colors.textMuted};
+  background: ${({ theme }) => theme.colors.backgroundDark};
   padding: 2px 8px;
-  border-radius: ${theme.borderRadius.sm};
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
 `;
 
 const Actions = styled.div`
   display: flex;
   align-items: center;
-  gap: ${theme.spacing.md};
+  gap: ${({ theme }) => theme.spacing.md};
 `;
 
 const EnvironmentSelector = styled.div`
@@ -50,19 +49,19 @@ const EnvironmentSelector = styled.div`
 const ThemeToggleButton = styled.button`
   width: 40px;
   height: 40px;
-  border-radius: ${theme.borderRadius.md};
-  background: ${theme.colors.backgroundDark};
-  border: 1px solid ${theme.colors.border};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+  background: ${({ theme }) => theme.colors.backgroundDark};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all ${theme.transitions.fast};
+  transition: all ${({ theme }) => theme.transitions.fast};
   font-size: 20px;
   
   &:hover {
-    background: ${theme.colors.backgroundLight};
-    border-color: ${theme.colors.borderDark};
+    background: ${({ theme }) => theme.colors.backgroundLight};
+    border-color: ${({ theme }) => theme.colors.borderDark};
     transform: scale(1.05);
   }
   

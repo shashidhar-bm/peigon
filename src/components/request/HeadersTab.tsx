@@ -1,13 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
-import { theme } from '../../styles/theme';
 import { useRequestContext } from '../../contexts';
 import { createEmptyKeyValuePair } from '../../utils';
 import { KeyValuePair } from '../../types';
 import { Button } from '../common';
 
 const TabContainer = styled.div`
-  padding: ${theme.spacing.md};
+  padding: ${({ theme }) => theme.spacing.md};
   height: 100%;
   overflow: auto;
 `;
@@ -15,13 +14,13 @@ const TabContainer = styled.div`
 const Table = styled.div`
   display: flex;
   flex-direction: column;
-  gap: ${theme.spacing.xs};
+  gap: ${({ theme }) => theme.spacing.xs};
 `;
 
 const Row = styled.div`
   display: grid;
   grid-template-columns: 30px 1fr 1fr 40px;
-  gap: ${theme.spacing.sm};
+  gap: ${({ theme }) => theme.spacing.sm};
   align-items: center;
 `;
 
@@ -32,35 +31,35 @@ const Checkbox = styled.input.attrs({ type: 'checkbox' })`
 `;
 
 const Input = styled.input`
-  padding: ${theme.spacing.sm};
-  font-family: ${theme.fonts.primary};
-  font-size: ${theme.fontSizes.sm};
-  color: ${theme.colors.textPrimary};
-  background: ${theme.colors.background};
-  border: 1px solid ${theme.colors.border};
-  border-radius: ${theme.borderRadius.sm};
+  padding: ${({ theme }) => theme.spacing.sm};
+  font-family: ${({ theme }) => theme.fonts.primary};
+  font-size: ${({ theme }) => theme.fontSizes.sm};
+  color: ${({ theme }) => theme.colors.textPrimary};
+  background: ${({ theme }) => theme.colors.background};
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
   outline: none;
   
   &:focus {
-    border-color: ${theme.colors.primary};
+    border-color: ${({ theme }) => theme.colors.primary};
   }
 `;
 
 const DeleteButton = styled.button`
-  padding: ${theme.spacing.xs};
+  padding: ${({ theme }) => theme.spacing.xs};
   background: transparent;
   border: none;
-  color: ${theme.colors.textMuted};
+  color: ${({ theme }) => theme.colors.textMuted};
   cursor: pointer;
-  font-size: ${theme.fontSizes.md};
+  font-size: ${({ theme }) => theme.fontSizes.md};
   
   &:hover {
-    color: ${theme.colors.error};
+    color: ${({ theme }) => theme.colors.error};
   }
 `;
 
 const AddButton = styled(Button)`
-  margin-top: ${theme.spacing.sm};
+  margin-top: ${({ theme }) => theme.spacing.sm};
   align-self: flex-start;
 `;
 

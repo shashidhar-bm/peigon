@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { theme } from '../../styles/theme';
 
 interface ModalProps {
   isOpen: boolean;
@@ -17,18 +16,18 @@ const Overlay = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  background: ${theme.colors.overlay};
+  background: ${({ theme }) => theme.colors.overlay};
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: ${theme.zIndex.modal};
-  padding: ${theme.spacing.lg};
+  z-index: ${({ theme }) => theme.zIndex.modal};
+  padding: ${({ theme }) => theme.spacing.lg};
 `;
 
 const ModalContainer = styled.div<{ $size: 'small' | 'medium' | 'large' }>`
-  background: ${theme.colors.background};
-  border-radius: ${theme.borderRadius.lg};
-  box-shadow: ${theme.shadows.xl};
+  background: ${({ theme }) => theme.colors.background};
+  border-radius: ${({ theme }) => theme.borderRadius.lg};
+  box-shadow: ${({ theme }) => theme.shadows.xl};
   display: flex;
   flex-direction: column;
   max-height: 90vh;
@@ -43,45 +42,45 @@ const ModalContainer = styled.div<{ $size: 'small' | 'medium' | 'large' }>`
 `;
 
 const ModalHeader = styled.div`
-  padding: ${theme.spacing.lg};
-  border-bottom: 1px solid ${theme.colors.border};
+  padding: ${({ theme }) => theme.spacing.lg};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
   display: flex;
   align-items: center;
   justify-content: space-between;
 `;
 
 const ModalTitle = styled.h2`
-  font-size: ${theme.fontSizes.xl};
+  font-size: ${({ theme }) => theme.fontSizes.xl};
   font-weight: 600;
-  color: ${theme.colors.textPrimary};
+  color: ${({ theme }) => theme.colors.textPrimary};
   margin: 0;
 `;
 
 const CloseButton = styled.button`
-  padding: ${theme.spacing.xs};
+  padding: ${({ theme }) => theme.spacing.xs};
   background: transparent;
   border: none;
   cursor: pointer;
-  font-size: ${theme.fontSizes.xl};
-  color: ${theme.colors.textMuted};
-  transition: color ${theme.transitions.fast};
+  font-size: ${({ theme }) => theme.fontSizes.xl};
+  color: ${({ theme }) => theme.colors.textMuted};
+  transition: color ${({ theme }) => theme.transitions.fast};
   
   &:hover {
-    color: ${theme.colors.textPrimary};
+    color: ${({ theme }) => theme.colors.textPrimary};
   }
 `;
 
 const ModalBody = styled.div`
-  padding: ${theme.spacing.lg};
+  padding: ${({ theme }) => theme.spacing.lg};
   overflow: auto;
   flex: 1;
 `;
 
 const ModalFooter = styled.div`
-  padding: ${theme.spacing.lg};
-  border-top: 1px solid ${theme.colors.border};
+  padding: ${({ theme }) => theme.spacing.lg};
+  border-top: 1px solid ${({ theme }) => theme.colors.border};
   display: flex;
-  gap: ${theme.spacing.md};
+  gap: ${({ theme }) => theme.spacing.md};
   justify-content: flex-end;
 `;
 

@@ -1,34 +1,34 @@
 import React from 'react';
-import styled from 'styled-components';
-import { theme } from '../../styles/theme';
+import styled, { useTheme } from 'styled-components';
 import { useRequestContext } from '../../contexts';
 import { AuthType } from '../../types';
 import { Select, Input } from '../common';
 
 const TabContainer = styled.div`
-  padding: ${theme.spacing.md};
+  padding: ${({ theme }) => theme.spacing.md};
   height: 100%;
   display: flex;
   flex-direction: column;
-  gap: ${theme.spacing.md};
+  gap: ${({ theme }) => theme.spacing.md};
   overflow: auto;
 `;
 
 const AuthTypeSelector = styled.div`
   display: flex;
-  gap: ${theme.spacing.md};
+  gap: ${({ theme }) => theme.spacing.md};
   align-items: center;
 `;
 
 const AuthForm = styled.div`
   display: flex;
   flex-direction: column;
-  gap: ${theme.spacing.md};
+  gap: ${({ theme }) => theme.spacing.md};
   max-width: 500px;
 `;
 
 export const AuthTab: React.FC = () => {
   const { currentRequest, updateRequest } = useRequestContext();
+  const theme = useTheme();
 
   const authTypeOptions = [
     { value: 'none', label: 'No Auth' },

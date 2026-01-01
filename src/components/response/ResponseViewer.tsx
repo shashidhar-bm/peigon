@@ -1,6 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
-import { theme } from '../../styles/theme';
+import styled, { useTheme } from 'styled-components';
 import { useRequestContext } from '../../contexts';
 import { Tabs } from '../common';
 import { StatusBar } from './StatusBar';
@@ -11,7 +10,7 @@ const ViewerContainer = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: ${theme.colors.background};
+  background: ${({ theme }) => theme.colors.background};
 `;
 
 const EmptyState = styled.div`
@@ -19,9 +18,9 @@ const EmptyState = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: ${theme.colors.textMuted};
-  font-size: ${theme.fontSizes.lg};
-  background: ${theme.colors.backgroundLight};
+  color: ${({ theme }) => theme.colors.textMuted};
+  font-size: ${({ theme }) => theme.fontSizes.lg};
+  background: ${({ theme }) => theme.colors.backgroundLight};
 `;
 
 const TabsContainer = styled.div`
@@ -31,6 +30,7 @@ const TabsContainer = styled.div`
 
 export const ResponseViewer: React.FC = () => {
   const { response, error, isLoading } = useRequestContext();
+  const theme = useTheme();
 
   if (isLoading) {
     return (

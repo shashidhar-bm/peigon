@@ -1,5 +1,4 @@
 import { css } from 'styled-components';
-import { theme } from './theme';
 
 export const flexCenter = css`
   display: flex;
@@ -33,24 +32,24 @@ export const absoluteFill = css`
 `;
 
 export const cardStyle = css`
-  background: ${theme.colors.background};
-  border: 1px solid ${theme.colors.border};
-  border-radius: ${theme.borderRadius.md};
-  box-shadow: ${theme.shadows.sm};
+  background: ${({ theme }) => theme.colors.background};
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+  box-shadow: ${({ theme }) => theme.shadows.sm};
 `;
 
 export const hoverEffect = css`
-  transition: all ${theme.transitions.fast};
+  transition: all ${({ theme }) => theme.transitions.fast};
   
   &:hover {
     transform: translateY(-1px);
-    box-shadow: ${theme.shadows.md};
+    box-shadow: ${({ theme }) => theme.shadows.md};
   }
 `;
 
 export const focusOutline = css`
   &:focus {
-    outline: 2px solid ${theme.colors.primary};
+    outline: 2px solid ${({ theme }) => theme.colors.primary};
     outline-offset: 2px;
   }
 `;

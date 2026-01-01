@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { theme } from '../../styles/theme';
 import { RequestBuilder } from '../request/RequestBuilder';
 import { ResponseViewer } from '../response/ResponseViewer';
 
@@ -9,7 +8,7 @@ const MainContainer = styled.main`
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background: ${theme.colors.backgroundLight};
+  background: ${({ theme }) => theme.colors.backgroundLight};
 `;
 
 const SplitPanel = styled.div`
@@ -33,7 +32,7 @@ const ResponseSection = styled.div`
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  border-top: 1px solid ${theme.colors.border};
+  border-top: 1px solid ${({ theme }) => theme.colors.border};
 `;
 
 export const MainPanel: React.FC = () => {

@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { theme } from '../../styles/theme';
 import { useRequestContext, useEnvironmentContext, useHistoryContext } from '../../contexts';
 import { Button, Tabs } from '../common';
 import { MethodSelector } from './MethodSelector';
@@ -14,14 +13,14 @@ const BuilderContainer = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: ${theme.colors.background};
+  background: ${({ theme }) => theme.colors.background};
 `;
 
 const RequestLine = styled.div`
   display: flex;
-  gap: ${theme.spacing.md};
-  padding: ${theme.spacing.md};
-  border-bottom: 1px solid ${theme.colors.border};
+  gap: ${({ theme }) => theme.spacing.md};
+  padding: ${({ theme }) => theme.spacing.md};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
   align-items: center;
 `;
 

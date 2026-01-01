@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
-import { theme } from '../../styles/theme';
+import styled, { useTheme } from 'styled-components';
 import { ApiResponse } from '../../types';
 import { formatBytes, formatTime, getStatusColorCategory } from '../../utils';
 import { COLORS } from '../../constants';
@@ -14,22 +13,22 @@ interface StatusBarProps {
 const BarContainer = styled.div`
   display: flex;
   align-items: center;
-  gap: ${theme.spacing.lg};
-  padding: ${theme.spacing.md} ${theme.spacing.lg};
-  background: ${theme.colors.backgroundLight};
-  border-bottom: 1px solid ${theme.colors.border};
+  gap: ${({ theme }) => theme.spacing.lg};
+  padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.lg};
+  background: ${({ theme }) => theme.colors.backgroundLight};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
 `;
 
 const StatusBadge = styled.div<{ $status: number }>`
-  padding: ${theme.spacing.xs} ${theme.spacing.md};
+  padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.md};
   background: ${props => {
     const category = getStatusColorCategory(props.$status);
     return COLORS[category as keyof typeof COLORS];
   }};
-  color: ${theme.colors.textWhite};
-  font-size: ${theme.fontSizes.sm};
+  color: ${({ theme }) => theme.colors.textWhite};
+  font-size: ${({ theme }) => theme.fontSizes.sm};
   font-weight: 600;
-  border-radius: ${theme.borderRadius.md};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
 `;
 
 const Stat = styled.div`
@@ -39,21 +38,21 @@ const Stat = styled.div`
 `;
 
 const StatLabel = styled.span`
-  font-size: ${theme.fontSizes.xs};
-  color: ${theme.colors.textMuted};
+  font-size: ${({ theme }) => theme.fontSizes.xs};
+  color: ${({ theme }) => theme.colors.textMuted};
   text-transform: uppercase;
 `;
 
 const StatValue = styled.span`
-  font-size: ${theme.fontSizes.sm};
+  font-size: ${({ theme }) => theme.fontSizes.sm};
   font-weight: 500;
-  color: ${theme.colors.textPrimary};
+  color: ${({ theme }) => theme.colors.textPrimary};
 `;
 
 const Actions = styled.div`
   margin-left: auto;
   display: flex;
-  gap: ${theme.spacing.sm};
+  gap: ${({ theme }) => theme.spacing.sm};
 `;
 
 export const StatusBar: React.FC<StatusBarProps> = ({ response }) => {
@@ -109,26 +108,43 @@ export const StatusBar: React.FC<StatusBarProps> = ({ response }) => {
         onClose={() => setShowSaveModal(false)}
         title="Save Response"
       >
-        <div style={{ padding: theme.spacing.md }}>
-          <Input
-            label="Response Name"
-            value={responseName}
-            onChange={(e) => setResponseName(e.target.value)}
-            placeholder="e.g., Production User API - Jan 2024"
-            fullWidth
-            autoFocus
-          />
-          <div style={{ marginTop: theme.spacing.md, display: 'flex', gap: theme.spacing.sm, justifyContent: 'flex-end' }}>
-            <Button variant="secondary" onClick={() => setShowSaveModal(false)}>
-              Cancel
-            </Button>
-            <Button variant="primary" onClick={handleSave} disabled={!responseName.trim()}>
-              Save
-            </Button>
-          </div>
-        </div>
+        <SaveModalContent
+          responseName={responseName}
+          setResponseName={setResponseName}
+          setShowSaveModal={setShowSaveModal}
+          handleSave={handleSave}
+        />
       </Modal>
     </>
+  );
+};
+
+// Helper component to use useTheme hook inside Modal content if needed, 
+// or just access theme from context if we extract this.
+// Actually, for inline styles, we need the theme object.
+// Let's use the useTheme hook at the top level of StatusBar.
+
+const SaveModalContent: React.FC<any> = ({ responseName, setResponseName, setShowSaveModal, handleSave }) => {
+  const theme = useTheme();
+  return (
+    <div style={{ padding: theme.spacing.md }}>
+      <Input
+        label="Response Name"
+        value={responseName}
+        onChange={(e) => setResponseName(e.target.value)}
+        placeholder="e.g., Production User API - Jan 2024"
+        fullWidth
+        autoFocus
+      />
+      <div style={{ marginTop: theme.spacing.md, display: 'flex', gap: theme.spacing.sm, justifyContent: 'flex-end' }}>
+        <Button variant="secondary" onClick={() => setShowSaveModal(false)}>
+          Cancel
+        </Button>
+        <Button variant="primary" onClick={handleSave} disabled={!responseName.trim()}>
+          Save
+        </Button>
+      </div>
+    </div>
   );
 };
 

@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { theme } from '../../styles/theme';
 import { KeyValuePair } from '../../types';
 import { Button, Input } from './';
 import { v4 as uuidv4 } from 'uuid';
@@ -15,27 +14,27 @@ interface KeyValuePairListProps {
 const ListContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: ${theme.spacing.sm};
+  gap: ${({ theme }) => theme.spacing.sm};
 `;
 
 const PairRow = styled.div`
   display: grid;
   grid-template-columns: auto 1fr 1fr auto;
-  gap: ${theme.spacing.sm};
+  gap: ${({ theme }) => theme.spacing.sm};
   align-items: start;
 `;
 
 const Checkbox = styled.input`
-  margin-top: ${theme.spacing.md};
+  margin-top: ${({ theme }) => theme.spacing.md};
   cursor: pointer;
 `;
 
 const DeleteButton = styled(Button)`
-  margin-top: ${theme.spacing.xs};
+  margin-top: ${({ theme }) => theme.spacing.xs};
 `;
 
 const AddButtonContainer = styled.div`
-  margin-top: ${theme.spacing.sm};
+  margin-top: ${({ theme }) => theme.spacing.sm};
 `;
 
 export const KeyValuePairList: React.FC<KeyValuePairListProps> = ({

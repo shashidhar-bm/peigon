@@ -1,13 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
-import { theme } from '../../styles/theme';
 
 interface HeadersViewProps {
   headers: Record<string, string>;
 }
 
 const ViewContainer = styled.div`
-  padding: ${theme.spacing.md};
+  padding: ${({ theme }) => theme.spacing.md};
   overflow: auto;
 `;
 
@@ -18,32 +17,32 @@ const Table = styled.table`
 
 const Th = styled.th`
   text-align: left;
-  padding: ${theme.spacing.sm} ${theme.spacing.md};
-  background: ${theme.colors.backgroundDark};
-  border-bottom: 1px solid ${theme.colors.border};
+  padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
+  background: ${({ theme }) => theme.colors.backgroundDark};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
   font-weight: 600;
-  font-size: ${theme.fontSizes.sm};
-  color: ${theme.colors.textPrimary};
+  font-size: ${({ theme }) => theme.fontSizes.sm};
+  color: ${({ theme }) => theme.colors.textPrimary};
 `;
 
 const Td = styled.td`
-  padding: ${theme.spacing.sm} ${theme.spacing.md};
-  border-bottom: 1px solid ${theme.colors.borderLight};
-  font-size: ${theme.fontSizes.sm};
-  color: ${theme.colors.textPrimary};
+  padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.borderLight};
+  font-size: ${({ theme }) => theme.fontSizes.sm};
+  color: ${({ theme }) => theme.colors.textPrimary};
   word-break: break-all;
 `;
 
 const KeyCell = styled(Td)`
   font-weight: 500;
-  color: ${theme.colors.textSecondary};
+  color: ${({ theme }) => theme.colors.textSecondary};
   width: 30%;
 `;
 
 const EmptyState = styled.div`
   text-align: center;
-  color: ${theme.colors.textMuted};
-  padding: ${theme.spacing.xl};
+  color: ${({ theme }) => theme.colors.textMuted};
+  padding: ${({ theme }) => theme.spacing.xl};
 `;
 
 export const HeadersView: React.FC<HeadersViewProps> = ({ headers }) => {

@@ -1,22 +1,21 @@
 import React from 'react';
-import styled from 'styled-components';
-import { theme } from '../../styles/theme';
+import styled, { useTheme } from 'styled-components';
 import { useRequestContext } from '../../contexts';
 import { BodyType } from '../../types';
 import { Textarea, Select, KeyValuePairList } from '../common';
 
 const TabContainer = styled.div`
-  padding: ${theme.spacing.md};
+  padding: ${({ theme }) => theme.spacing.md};
   height: 100%;
   display: flex;
   flex-direction: column;
-  gap: ${theme.spacing.md};
+  gap: ${({ theme }) => theme.spacing.md};
   overflow: auto;
 `;
 
 const BodyTypeSelector = styled.div`
   display: flex;
-  gap: ${theme.spacing.md};
+  gap: ${({ theme }) => theme.spacing.md};
   align-items: center;
 `;
 
@@ -28,6 +27,7 @@ const EditorContainer = styled.div`
 
 export const BodyTab: React.FC = () => {
   const { currentRequest, updateRequest } = useRequestContext();
+  const theme = useTheme();
 
   const bodyTypeOptions = [
     { value: 'none', label: 'None' },

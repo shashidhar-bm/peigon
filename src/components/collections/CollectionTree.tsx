@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { theme } from '../../styles/theme';
 import { useCollectionContext, useRequestContext } from '../../contexts';
 import { Collection } from '../../types';
 import { CollectionItem } from './CollectionItem';
@@ -9,14 +8,14 @@ import { Modal, Input, Button } from '../common';
 const TreeContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: ${theme.spacing.sm};
+  gap: ${({ theme }) => theme.spacing.sm};
 `;
 
 const EmptyState = styled.div`
   text-align: center;
-  padding: ${theme.spacing.xl};
-  color: ${theme.colors.sidebarText};
-  font-size: ${theme.fontSizes.sm};
+  padding: ${({ theme }) => theme.spacing.xl};
+  color: ${({ theme }) => theme.colors.sidebarText};
+  font-size: ${({ theme }) => theme.fontSizes.sm};
 `;
 
 export const CollectionTree: React.FC = () => {

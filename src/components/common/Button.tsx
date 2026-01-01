@@ -1,6 +1,5 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { theme } from '../../styles/theme';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'danger' | 'success' | 'ghost';
@@ -13,13 +12,13 @@ const StyledButton = styled.button<ButtonProps>`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: ${theme.spacing.sm};
-  font-family: ${theme.fonts.primary};
+  gap: ${({ theme }) => theme.spacing.sm};
+  font-family: ${({ theme }) => theme.fonts.primary};
   font-weight: 500;
   border: none;
-  border-radius: ${theme.borderRadius.md};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
   cursor: pointer;
-  transition: all ${theme.transitions.fast};
+  transition: all ${({ theme }) => theme.transitions.fast};
   outline: none;
   
   ${props => props.fullWidth && css`
@@ -30,20 +29,20 @@ const StyledButton = styled.button<ButtonProps>`
     switch (props.size) {
       case 'small':
         return css`
-          padding: ${theme.spacing.xs} ${theme.spacing.sm};
-          font-size: ${theme.fontSizes.sm};
+          padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.sm};
+          font-size: ${({ theme }) => theme.fontSizes.sm};
           height: 28px;
         `;
       case 'large':
         return css`
-          padding: ${theme.spacing.md} ${theme.spacing.lg};
-          font-size: ${theme.fontSizes.lg};
+          padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.lg};
+          font-size: ${({ theme }) => theme.fontSizes.lg};
           height: 44px;
         `;
       default:
         return css`
-          padding: ${theme.spacing.sm} ${theme.spacing.md};
-          font-size: ${theme.fontSizes.md};
+          padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
+          font-size: ${({ theme }) => theme.fontSizes.md};
           height: 36px;
         `;
     }
@@ -53,17 +52,17 @@ const StyledButton = styled.button<ButtonProps>`
     switch (props.variant) {
       case 'primary':
         return css`
-          background: ${theme.colors.primary};
-          color: ${theme.colors.textWhite};
+          background: ${({ theme }) => theme.colors.primary};
+          color: ${({ theme }) => theme.colors.textWhite};
           
           &:hover:not(:disabled) {
-            background: ${theme.colors.primaryHover};
+            background: ${({ theme }) => theme.colors.primaryHover};
           }
         `;
       case 'danger':
         return css`
-          background: ${theme.colors.error};
-          color: ${theme.colors.textWhite};
+          background: ${({ theme }) => theme.colors.error};
+          color: ${({ theme }) => theme.colors.textWhite};
           
           &:hover:not(:disabled) {
             background: #E03535;
@@ -71,8 +70,8 @@ const StyledButton = styled.button<ButtonProps>`
         `;
       case 'success':
         return css`
-          background: ${theme.colors.success};
-          color: ${theme.colors.textWhite};
+          background: ${({ theme }) => theme.colors.success};
+          color: ${({ theme }) => theme.colors.textWhite};
           
           &:hover:not(:disabled) {
             background: #3BB880;
@@ -81,21 +80,21 @@ const StyledButton = styled.button<ButtonProps>`
       case 'ghost':
         return css`
           background: transparent;
-          color: ${theme.colors.textPrimary};
+          color: ${({ theme }) => theme.colors.textPrimary};
           
           &:hover:not(:disabled) {
-            background: ${theme.colors.backgroundDark};
+            background: ${({ theme }) => theme.colors.backgroundDark};
           }
         `;
       default:
         return css`
-          background: ${theme.colors.backgroundDark};
-          color: ${theme.colors.textPrimary};
-          border: 1px solid ${theme.colors.border};
+          background: ${({ theme }) => theme.colors.backgroundDark};
+          color: ${({ theme }) => theme.colors.textPrimary};
+          border: 1px solid ${({ theme }) => theme.colors.border};
           
           &:hover:not(:disabled) {
-            background: ${theme.colors.backgroundLight};
-            border-color: ${theme.colors.borderDark};
+            background: ${({ theme }) => theme.colors.backgroundLight};
+            border-color: ${({ theme }) => theme.colors.borderDark};
           }
         `;
     }
@@ -107,16 +106,16 @@ const StyledButton = styled.button<ButtonProps>`
   }
   
   &:focus-visible {
-    outline: 2px solid ${theme.colors.primary};
+    outline: 2px solid ${({ theme }) => theme.colors.primary};
     outline-offset: 2px;
   }
 `;
 
-export const Button: React.FC<ButtonProps> = ({ 
-  children, 
-  isLoading, 
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  isLoading,
   disabled,
-  ...props 
+  ...props
 }) => {
   return (
     <StyledButton disabled={disabled || isLoading} {...props}>

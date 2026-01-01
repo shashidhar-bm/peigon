@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { theme } from '../../styles/theme';
 import { ApiResponse, BodyViewMode } from '../../types';
 import { formatJson, copyToClipboard } from '../../utils';
 import { Button } from '../common';
@@ -18,32 +17,32 @@ const ViewContainer = styled.div`
 
 const Toolbar = styled.div`
   display: flex;
-  gap: ${theme.spacing.sm};
-  padding: ${theme.spacing.md};
-  border-bottom: 1px solid ${theme.colors.border};
-  background: ${theme.colors.backgroundLight};
+  gap: ${({ theme }) => theme.spacing.sm};
+  padding: ${({ theme }) => theme.spacing.md};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
+  background: ${({ theme }) => theme.colors.backgroundLight};
 `;
 
 const ContentArea = styled.div`
   flex: 1;
   overflow: auto;
-  padding: ${theme.spacing.md};
-  background: ${theme.colors.background};
+  padding: ${({ theme }) => theme.spacing.md};
+  background: ${({ theme }) => theme.colors.background};
 `;
 
 const CodeBlock = styled.pre`
   margin: 0;
-  font-family: ${theme.fonts.mono};
-  font-size: ${theme.fontSizes.sm};
-  color: ${theme.colors.textPrimary};
+  font-family: ${({ theme }) => theme.fonts.mono};
+  font-size: ${({ theme }) => theme.fontSizes.sm};
+  color: ${({ theme }) => theme.colors.textPrimary};
   white-space: pre-wrap;
   word-wrap: break-word;
 `;
 
 const EmptyState = styled.div`
   text-align: center;
-  color: ${theme.colors.textMuted};
-  padding: ${theme.spacing.xl};
+  color: ${({ theme }) => theme.colors.textMuted};
+  padding: ${({ theme }) => theme.spacing.xl};
 `;
 
 export const BodyView: React.FC<BodyViewProps> = ({ response }) => {
@@ -51,10 +50,10 @@ export const BodyView: React.FC<BodyViewProps> = ({ response }) => {
   const [copySuccess, setCopySuccess] = useState(false);
 
   const handleCopy = async () => {
-    const content = typeof response.data === 'string' 
-      ? response.data 
+    const content = typeof response.data === 'string'
+      ? response.data
       : formatJson(response.data);
-    
+
     const success = await copyToClipboard(content);
     if (success) {
       setCopySuccess(true);

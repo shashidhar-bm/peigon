@@ -1,5 +1,4 @@
 import { createGlobalStyle } from 'styled-components';
-import { theme } from './theme';
 
 export const GlobalStyles = createGlobalStyle`
   * {
@@ -14,10 +13,10 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   body {
-    font-family: ${theme.fonts.primary};
-    font-size: ${theme.fontSizes.md};
-    color: ${theme.colors.textPrimary};
-    background-color: ${theme.colors.background};
+    font-family: ${({ theme }) => theme.fonts.primary};
+    font-size: ${({ theme }) => theme.fontSizes.md};
+    color: ${({ theme }) => theme.colors.textPrimary};
+    background-color: ${({ theme }) => theme.colors.background};
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow: hidden;
@@ -31,7 +30,7 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   code, pre {
-    font-family: ${theme.fonts.mono};
+    font-family: ${({ theme }) => theme.fonts.mono};
   }
 
   button {
@@ -53,7 +52,7 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   a {
-    color: ${theme.colors.primary};
+    color: ${({ theme }) => theme.colors.primary};
     text-decoration: none;
     
     &:hover {
@@ -72,22 +71,22 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   ::-webkit-scrollbar-track {
-    background: ${theme.colors.backgroundDark};
+    background: ${({ theme }) => theme.colors.backgroundDark};
   }
 
   ::-webkit-scrollbar-thumb {
-    background: ${theme.colors.borderDark};
-    border-radius: ${theme.borderRadius.md};
+    background: ${({ theme }) => theme.colors.borderDark};
+    border-radius: ${({ theme }) => theme.borderRadius.md};
     
     &:hover {
-      background: ${theme.colors.textMuted};
+      background: ${({ theme }) => theme.colors.textMuted};
     }
   }
 
   /* Selection */
   ::selection {
-    background-color: ${theme.colors.primaryLight};
-    color: ${theme.colors.textPrimary};
+    background-color: ${({ theme }) => theme.colors.primaryLight};
+    color: ${({ theme }) => theme.colors.textPrimary};
   }
 `;
 

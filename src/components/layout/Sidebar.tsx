@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { theme } from '../../styles/theme';
 import { Button, Modal, Input } from '../common';
 import { useCollectionContext, useHistoryContext } from '../../contexts';
 import { CollectionTree } from '../collections/CollectionTree';
 
 const SidebarContainer = styled.aside`
   width: 300px;
-  background: ${theme.colors.sidebarBg};
-  border-right: 1px solid ${theme.colors.border};
+  background: ${({ theme }) => theme.colors.sidebarBg};
+  border-right: 1px solid ${({ theme }) => theme.colors.border};
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
@@ -16,85 +15,85 @@ const SidebarContainer = styled.aside`
 `;
 
 const SidebarHeader = styled.div`
-  padding: ${theme.spacing.md};
-  border-bottom: 1px solid ${theme.colors.sidebarActive};
+  padding: ${({ theme }) => theme.spacing.md};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.sidebarActive};
 `;
 
 const TabButtons = styled.div`
   display: flex;
-  gap: ${theme.spacing.xs};
-  margin-bottom: ${theme.spacing.md};
+  gap: ${({ theme }) => theme.spacing.xs};
+  margin-bottom: ${({ theme }) => theme.spacing.md};
 `;
 
 const TabButton = styled.button<{ $isActive: boolean }>`
   flex: 1;
-  padding: ${theme.spacing.sm};
-  background: ${props => props.$isActive ? theme.colors.sidebarActive : 'transparent'};
-  color: ${props => props.$isActive ? theme.colors.textWhite : theme.colors.sidebarText};
+  padding: ${({ theme }) => theme.spacing.sm};
+  background: ${({ theme, $isActive }) => $isActive ? theme.colors.sidebarActive : 'transparent'};
+  color: ${({ theme, $isActive }) => $isActive ? theme.colors.textWhite : theme.colors.sidebarText};
   border: none;
-  border-radius: ${theme.borderRadius.md};
-  font-size: ${theme.fontSizes.sm};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+  font-size: ${({ theme }) => theme.fontSizes.sm};
   font-weight: 500;
   cursor: pointer;
-  transition: all ${theme.transitions.fast};
+  transition: all ${({ theme }) => theme.transitions.fast};
   
   &:hover {
-    background: ${theme.colors.sidebarHover};
-    color: ${theme.colors.textWhite};
+    background: ${({ theme }) => theme.colors.sidebarHover};
+    color: ${({ theme }) => theme.colors.textWhite};
   }
 `;
 
 const SidebarContent = styled.div`
   flex: 1;
   overflow: auto;
-  padding: ${theme.spacing.md};
+  padding: ${({ theme }) => theme.spacing.md};
 `;
 
 const EmptyState = styled.div`
   text-align: center;
-  padding: ${theme.spacing.xl};
-  color: ${theme.colors.sidebarText};
-  font-size: ${theme.fontSizes.sm};
+  padding: ${({ theme }) => theme.spacing.xl};
+  color: ${({ theme }) => theme.colors.sidebarText};
+  font-size: ${({ theme }) => theme.fontSizes.sm};
 `;
 
 const HistoryList = styled.div`
   display: flex;
   flex-direction: column;
-  gap: ${theme.spacing.xs};
+  gap: ${({ theme }) => theme.spacing.xs};
 `;
 
 const HistoryItem = styled.div`
-  padding: ${theme.spacing.sm};
-  background: ${theme.colors.sidebarHover};
-  border-radius: ${theme.borderRadius.md};
+  padding: ${({ theme }) => theme.spacing.sm};
+  background: ${({ theme }) => theme.colors.sidebarHover};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
   cursor: pointer;
-  transition: all ${theme.transitions.fast};
+  transition: all ${({ theme }) => theme.transitions.fast};
   
   &:hover {
-    background: ${theme.colors.sidebarActive};
+    background: ${({ theme }) => theme.colors.sidebarActive};
   }
 `;
 
 const HistoryMethod = styled.span<{ $method: string }>`
   font-weight: 600;
-  font-size: ${theme.fontSizes.sm};
-  color: ${theme.colors.success};
+  font-size: ${({ theme }) => theme.fontSizes.sm};
+  color: ${({ theme }) => theme.colors.success};
 `;
 
 const HistoryUrl = styled.div`
-  font-size: ${theme.fontSizes.sm};
-  color: ${theme.colors.sidebarText};
+  font-size: ${({ theme }) => theme.fontSizes.sm};
+  color: ${({ theme }) => theme.colors.sidebarText};
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  margin-top: ${theme.spacing.xs};
+  margin-top: ${({ theme }) => theme.spacing.xs};
 `;
 
 export const Sidebar: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'collections' | 'history'>('collections');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [collectionName, setCollectionName] = useState('');
-  
+
   const { createCollection } = useCollectionContext();
   const { history } = useHistoryContext();
 
@@ -111,24 +110,24 @@ export const Sidebar: React.FC = () => {
       <SidebarContainer>
         <SidebarHeader>
           <TabButtons>
-            <TabButton 
+            <TabButton
               $isActive={activeTab === 'collections'}
               onClick={() => setActiveTab('collections')}
             >
               Collections
             </TabButton>
-            <TabButton 
+            <TabButton
               $isActive={activeTab === 'history'}
               onClick={() => setActiveTab('history')}
             >
               History
             </TabButton>
           </TabButtons>
-          
+
           {activeTab === 'collections' && (
-            <Button 
-              variant="primary" 
-              size="small" 
+            <Button
+              variant="primary"
+              size="small"
               fullWidth
               onClick={() => setIsModalOpen(true)}
             >

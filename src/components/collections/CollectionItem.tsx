@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
-import { theme } from '../../styles/theme';
+import styled, { useTheme } from 'styled-components';
 import { Collection, ApiRequest } from '../../types';
 import { METHOD_COLORS } from '../../constants';
 
@@ -12,8 +11,8 @@ interface CollectionItemProps {
 }
 
 const ItemContainer = styled.div`
-  background: ${theme.colors.sidebarHover};
-  border-radius: ${theme.borderRadius.md};
+  background: ${({ theme }) => theme.colors.sidebarHover};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
   overflow: hidden;
 `;
 
@@ -21,40 +20,40 @@ const CollectionHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: ${theme.spacing.sm};
+  padding: ${({ theme }) => theme.spacing.sm};
   cursor: pointer;
-  transition: background ${theme.transitions.fast};
+  transition: background ${({ theme }) => theme.transitions.fast};
   
   &:hover {
-    background: ${theme.colors.sidebarActive};
+    background: ${({ theme }) => theme.colors.sidebarActive};
   }
 `;
 
 const CollectionTitle = styled.div`
   display: flex;
   align-items: center;
-  gap: ${theme.spacing.sm};
+  gap: ${({ theme }) => theme.spacing.sm};
   flex: 1;
 `;
 
 const ExpandIcon = styled.span<{ $isExpanded: boolean }>`
-  font-size: ${theme.fontSizes.sm};
-  color: ${theme.colors.sidebarText};
-  transition: transform ${theme.transitions.fast};
+  font-size: ${({ theme }) => theme.fontSizes.sm};
+  color: ${({ theme }) => theme.colors.sidebarText};
+  transition: transform ${({ theme }) => theme.transitions.fast};
   transform: ${props => props.$isExpanded ? 'rotate(90deg)' : 'rotate(0deg)'};
 `;
 
 const CollectionName = styled.span`
-  font-size: ${theme.fontSizes.md};
+  font-size: ${({ theme }) => theme.fontSizes.md};
   font-weight: 500;
-  color: ${theme.colors.textWhite};
+  color: ${({ theme }) => theme.colors.textWhite};
 `;
 
 const Actions = styled.div`
   display: flex;
-  gap: ${theme.spacing.xs};
+  gap: ${({ theme }) => theme.spacing.xs};
   opacity: 0;
-  transition: opacity ${theme.transitions.fast};
+  transition: opacity ${({ theme }) => theme.transitions.fast};
   
   ${ItemContainer}:hover & {
     opacity: 1;
@@ -62,49 +61,49 @@ const Actions = styled.div`
 `;
 
 const ActionButton = styled.button`
-  padding: ${theme.spacing.xs};
+  padding: ${({ theme }) => theme.spacing.xs};
   background: transparent;
   border: none;
-  color: ${theme.colors.sidebarText};
+  color: ${({ theme }) => theme.colors.sidebarText};
   cursor: pointer;
-  font-size: ${theme.fontSizes.sm};
-  transition: color ${theme.transitions.fast};
+  font-size: ${({ theme }) => theme.fontSizes.sm};
+  transition: color ${({ theme }) => theme.transitions.fast};
   
   &:hover {
-    color: ${theme.colors.textWhite};
+    color: ${({ theme }) => theme.colors.textWhite};
   }
 `;
 
 const RequestList = styled.div<{ $isExpanded: boolean }>`
   display: ${props => props.$isExpanded ? 'block' : 'none'};
-  padding: 0 ${theme.spacing.sm} ${theme.spacing.sm};
+  padding: 0 ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.sm};
 `;
 
 const RequestItem = styled.div`
   display: flex;
   align-items: center;
-  gap: ${theme.spacing.sm};
-  padding: ${theme.spacing.xs} ${theme.spacing.sm};
-  margin-left: ${theme.spacing.md};
-  border-radius: ${theme.borderRadius.sm};
+  gap: ${({ theme }) => theme.spacing.sm};
+  padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.sm};
+  margin-left: ${({ theme }) => theme.spacing.md};
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
   cursor: pointer;
-  transition: background ${theme.transitions.fast};
+  transition: background ${({ theme }) => theme.transitions.fast};
   
   &:hover {
-    background: ${theme.colors.sidebarActive};
+    background: ${({ theme }) => theme.colors.sidebarActive};
   }
 `;
 
 const MethodBadge = styled.span<{ $method: string }>`
-  font-size: ${theme.fontSizes.xs};
+  font-size: ${({ theme }) => theme.fontSizes.xs};
   font-weight: 600;
-  color: ${props => METHOD_COLORS[props.$method as keyof typeof METHOD_COLORS] || theme.colors.textMuted};
+  color: ${props => METHOD_COLORS[props.$method as keyof typeof METHOD_COLORS] || props.theme.colors.textMuted};
   min-width: 40px;
 `;
 
 const RequestName = styled.span`
-  font-size: ${theme.fontSizes.sm};
-  color: ${theme.colors.sidebarText};
+  font-size: ${({ theme }) => theme.fontSizes.sm};
+  color: ${({ theme }) => theme.colors.sidebarText};
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -117,6 +116,7 @@ export const CollectionItem: React.FC<CollectionItemProps> = ({
   onRequestClick,
 }) => {
   const [isExpanded, setIsExpanded] = useState(true);
+  const theme = useTheme();
 
   return (
     <ItemContainer>
@@ -126,7 +126,7 @@ export const CollectionItem: React.FC<CollectionItemProps> = ({
           <CollectionName>{collection.name}</CollectionName>
         </CollectionTitle>
         <Actions>
-          <ActionButton 
+          <ActionButton
             onClick={(e) => {
               e.stopPropagation();
               onEdit();
@@ -135,7 +135,7 @@ export const CollectionItem: React.FC<CollectionItemProps> = ({
           >
             ✎
           </ActionButton>
-          <ActionButton 
+          <ActionButton
             onClick={(e) => {
               e.stopPropagation();
               onDelete();
@@ -154,7 +154,7 @@ export const CollectionItem: React.FC<CollectionItemProps> = ({
           </RequestItem>
         ) : (
           collection.requests.map(request => (
-            <RequestItem 
+            <RequestItem
               key={request.id}
               onClick={() => onRequestClick(request)}
             >

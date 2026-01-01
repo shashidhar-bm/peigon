@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { theme } from '../../styles/theme';
 import { HttpMethod } from '../../types';
 import { HTTP_METHODS, METHOD_COLORS } from '../../constants';
 
@@ -10,26 +9,26 @@ interface MethodSelectorProps {
 }
 
 const Select = styled.select<{ $method: HttpMethod }>`
-  padding: ${theme.spacing.sm} ${theme.spacing.md};
-  font-family: ${theme.fonts.primary};
-  font-size: ${theme.fontSizes.md};
+  padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
+  font-family: ${({ theme }) => theme.fonts.primary};
+  font-size: ${({ theme }) => theme.fontSizes.md};
   font-weight: 600;
   color: ${props => METHOD_COLORS[props.$method]};
-  background: ${theme.colors.background};
-  border: 1px solid ${theme.colors.border};
-  border-radius: ${theme.borderRadius.md};
+  background: ${({ theme }) => theme.colors.background};
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
   cursor: pointer;
   outline: none;
-  transition: all ${theme.transitions.fast};
+  transition: all ${({ theme }) => theme.transitions.fast};
   min-width: 120px;
   
   &:hover {
-    border-color: ${theme.colors.borderDark};
+    border-color: ${({ theme }) => theme.colors.borderDark};
   }
   
   &:focus {
-    border-color: ${theme.colors.primary};
-    box-shadow: 0 0 0 3px ${theme.colors.primaryLight};
+    border-color: ${({ theme }) => theme.colors.primary};
+    box-shadow: 0 0 0 3px ${({ theme }) => theme.colors.primaryLight};
   }
 `;
 

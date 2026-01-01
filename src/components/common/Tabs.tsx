@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { theme } from '../../styles/theme';
 
 interface Tab {
   id: string;
@@ -23,32 +22,32 @@ const TabsContainer = styled.div`
 
 const TabList = styled.div`
   display: flex;
-  gap: ${theme.spacing.xs};
-  border-bottom: 1px solid ${theme.colors.border};
-  background: ${theme.colors.backgroundLight};
+  gap: ${({ theme }) => theme.spacing.xs};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
+  background: ${({ theme }) => theme.colors.backgroundLight};
 `;
 
 const TabButton = styled.button<{ $isActive: boolean }>`
-  padding: ${theme.spacing.sm} ${theme.spacing.md};
-  font-size: ${theme.fontSizes.md};
+  padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
+  font-size: ${({ theme }) => theme.fontSizes.md};
   font-weight: 500;
-  color: ${props => props.$isActive ? theme.colors.primary : theme.colors.textSecondary};
-  background: ${props => props.$isActive ? theme.colors.background : 'transparent'};
+  color: ${({ theme, $isActive }) => $isActive ? theme.colors.primary : theme.colors.textSecondary};
+  background: ${({ theme, $isActive }) => $isActive ? theme.colors.background : 'transparent'};
   border: none;
-  border-bottom: 2px solid ${props => props.$isActive ? theme.colors.primary : 'transparent'};
+  border-bottom: 2px solid ${({ theme, $isActive }) => $isActive ? theme.colors.primary : 'transparent'};
   cursor: pointer;
-  transition: all ${theme.transitions.fast};
+  transition: all ${({ theme }) => theme.transitions.fast};
   
   &:hover {
-    color: ${theme.colors.primary};
-    background: ${theme.colors.background};
+    color: ${({ theme }) => theme.colors.primary};
+    background: ${({ theme }) => theme.colors.background};
   }
 `;
 
 const TabContent = styled.div`
   flex: 1;
   overflow: auto;
-  background: ${theme.colors.background};
+  background: ${({ theme }) => theme.colors.background};
 `;
 
 export const Tabs: React.FC<TabsProps> = ({ tabs, defaultActiveTab, onChange }) => {
