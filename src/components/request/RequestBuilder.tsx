@@ -37,11 +37,23 @@ export const RequestBuilder: React.FC = () => {
   const [isSaveModalOpen, setIsSaveModalOpen] = React.useState(false);
 
   const handleSend = async () => {
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/76b1d9bd-7576-473a-9c0f-3ea06293f1d8',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'RequestBuilder.tsx:39',message:'handleSend called',data:{method:currentRequest.method,url:currentRequest.url,hasUrl:!!currentRequest.url},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})}).catch(()=>{});
+    // #endregion
     try {
       const response = await sendRequest(activeVariables);
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/76b1d9bd-7576-473a-9c0f-3ea06293f1d8',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'RequestBuilder.tsx:42',message:'Request sent successfully',data:{status:response?.status,hasResponse:!!response},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})}).catch(()=>{});
+      // #endregion
       // Add to history after successful request
       addToHistory(currentRequest, response);
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/76b1d9bd-7576-473a-9c0f-3ea06293f1d8',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'RequestBuilder.tsx:44',message:'Added to history',data:{method:currentRequest.method,url:currentRequest.url},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})}).catch(()=>{});
+      // #endregion
     } catch (error) {
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/76b1d9bd-7576-473a-9c0f-3ea06293f1d8',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'RequestBuilder.tsx:46',message:'Request failed',data:{error:String(error)},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})}).catch(()=>{});
+      // #endregion
       console.error('Request failed:', error);
     }
   };

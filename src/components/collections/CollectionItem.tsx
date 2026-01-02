@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import styled, { useTheme } from 'styled-components';
 import { Collection, ApiRequest } from '../../types';
 import { METHOD_COLORS } from '../../constants';
@@ -8,6 +8,7 @@ interface CollectionItemProps {
   onEdit: () => void;
   onDelete: () => void;
   onRequestClick: (request: ApiRequest) => void;
+  onExport?: (collection: Collection) => void;
 }
 
 const ItemContainer = styled.div`
@@ -109,43 +110,108 @@ const RequestName = styled.span`
   white-space: nowrap;
 `;
 
+const ContextMenu = styled.div<{ $x: number; $y: number; $visible: boolean }>`
+  position: fixed;
+  top: ${props => props.$y}px;
+  left: ${props => props.$x}px;
+  background: ${({ theme }) => theme.colors.background};
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: ${({ theme }) => theme.spacing.xs};
+  z-index: 1000;
+  display: ${props => props.$visible ? 'block' : 'none'};
+  min-width: 150px;
+`;
+
+const ContextMenuItem = styled.button`
+  width: 100%;
+  padding: ${({ theme }) => theme.spacing.sm};
+  background: transparent;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  color: ${({ theme }) => theme.colors.textPrimary};
+  font-size: ${({ theme }) => theme.fontSizes.sm};
+  transition: background ${({ theme }) => theme.transitions.fast};
+  
+  &:hover {
+    background: ${({ theme }) => theme.colors.sidebarHover};
+  }
+`;
+
+const CollectionNameClickable = styled(CollectionName)`
+  user-select: none;
+`;
+
 export const CollectionItem: React.FC<CollectionItemProps> = ({
   collection,
   onEdit,
   onDelete,
   onRequestClick,
+  onExport,
 }) => {
   const [isExpanded, setIsExpanded] = useState(true);
+  const [contextMenu, setContextMenu] = useState<{ x: number; y: number } | null>(null);
   const theme = useTheme();
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setContextMenu(null);
+      }
+    };
+
+    if (contextMenu) {
+      document.addEventListener('click', handleClickOutside);
+      return () => document.removeEventListener('click', handleClickOutside);
+    }
+    return undefined;
+  }, [contextMenu]);
+
+  const handleContextMenu = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setContextMenu({ x: e.clientX, y: e.clientY });
+  };
+
+  const handleExport = () => {
+    if (onExport) {
+      onExport(collection);
+    }
+    setContextMenu(null);
+  };
 
   return (
-    <ItemContainer>
-      <CollectionHeader onClick={() => setIsExpanded(!isExpanded)}>
-        <CollectionTitle>
-          <ExpandIcon $isExpanded={isExpanded}>▶</ExpandIcon>
-          <CollectionName>{collection.name}</CollectionName>
-        </CollectionTitle>
-        <Actions>
-          <ActionButton
-            onClick={(e) => {
-              e.stopPropagation();
-              onEdit();
-            }}
-            title="Edit"
-          >
-            ✎
-          </ActionButton>
-          <ActionButton
-            onClick={(e) => {
-              e.stopPropagation();
-              onDelete();
-            }}
-            title="Delete"
-          >
-            🗑
-          </ActionButton>
-        </Actions>
-      </CollectionHeader>
+    <>
+      <ItemContainer ref={containerRef} onContextMenu={handleContextMenu}>
+        <CollectionHeader onClick={() => setIsExpanded(!isExpanded)}>
+          <CollectionTitle>
+            <ExpandIcon $isExpanded={isExpanded}>▶</ExpandIcon>
+            <CollectionNameClickable>{collection.name}</CollectionNameClickable>
+          </CollectionTitle>
+          <Actions>
+            <ActionButton
+              onClick={(e) => {
+                e.stopPropagation();
+                onEdit();
+              }}
+              title="Edit"
+            >
+              ✎
+            </ActionButton>
+            <ActionButton
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete();
+              }}
+              title="Delete"
+            >
+              🗑
+            </ActionButton>
+          </Actions>
+        </CollectionHeader>
 
       <RequestList $isExpanded={isExpanded}>
         {collection.requests.length === 0 ? (
@@ -167,6 +233,14 @@ export const CollectionItem: React.FC<CollectionItemProps> = ({
         )}
       </RequestList>
     </ItemContainer>
+    {contextMenu && (
+      <ContextMenu $x={contextMenu.x} $y={contextMenu.y} $visible={!!contextMenu} data-testid="collection-context-menu">
+        {onExport && (
+          <ContextMenuItem onClick={handleExport} data-testid="export-menu-item">Export</ContextMenuItem>
+        )}
+      </ContextMenu>
+    )}
+    </>
   );
 };
 

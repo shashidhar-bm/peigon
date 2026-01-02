@@ -128,19 +128,90 @@ export const Sidebar: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [collectionName, setCollectionName] = useState('');
+  const [importJson, setImportJson] = useState('');
+  const [importError, setImportError] = useState<string | null>(null);
 
-  // Imports logic would go here, for now just UI to pass test
-  // Ideally use the actual Import logic if available or create a placeholder modal
-
-  const { createCollection } = useCollectionContext();
+  const { createCollection, importCollection } = useCollectionContext();
   const { history, clearHistory } = useHistoryContext();
   const { setCurrentRequest, setResponse, clearResponse: clearRequestResponse } = useRequestContext();
 
+  // #region agent log
+  fetch('http://127.0.0.1:7242/ingest/76b1d9bd-7576-473a-9c0f-3ea06293f1d8',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Sidebar.tsx:126',message:'Sidebar rendered',data:{activeTab,historyLength:history.length,isModalOpen,isImportModalOpen},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
+  // #endregion
+
   const handleCreateCollection = () => {
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/76b1d9bd-7576-473a-9c0f-3ea06293f1d8',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Sidebar.tsx:139',message:'handleCreateCollection called',data:{collectionName:collectionName.trim()},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+    // #endregion
     if (collectionName.trim()) {
       createCollection(collectionName);
       setCollectionName('');
       setIsModalOpen(false);
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/76b1d9bd-7576-473a-9c0f-3ea06293f1d8',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Sidebar.tsx:145',message:'Collection created',data:{collectionName},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+      // #endregion
+    }
+  };
+
+  const handleImport = () => {
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/76b1d9bd-7576-473a-9c0f-3ea06293f1d8',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Sidebar.tsx:156',message:'handleImport called',data:{jsonLength:importJson.length},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+    // #endregion
+    setImportError(null);
+    
+    if (!importJson.trim()) {
+      setImportError('Please paste collection JSON');
+      return;
+    }
+
+    try {
+      const parsed = JSON.parse(importJson);
+      // Handle both CollectionExport format and direct collection format (for tests)
+      let exportData;
+      if (parsed.collection) {
+        // It's a CollectionExport format
+        exportData = parsed;
+      } else if (parsed.name && parsed.requests) {
+        // It's a direct collection format - wrap it and ensure all required fields
+        exportData = {
+          version: parsed.version || '1.0',
+          collection: {
+            id: parsed.id || 'temp-id',
+            name: parsed.name,
+            description: parsed.description,
+            requests: parsed.requests || [],
+            folders: parsed.folders || [],
+            createdAt: parsed.createdAt || new Date().toISOString(),
+            updatedAt: parsed.updatedAt || new Date().toISOString(),
+          },
+          exportedAt: parsed.exportedAt || new Date().toISOString(),
+        };
+      } else {
+        setImportError('Invalid collection format');
+        // #region agent log
+        fetch('http://127.0.0.1:7242/ingest/76b1d9bd-7576-473a-9c0f-3ea06293f1d8',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Sidebar.tsx:170',message:'Import validation failed',data:{hasCollection:!!parsed.collection,hasName:!!parsed.name},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+        // #endregion
+        return;
+      }
+
+      const result = importCollection(exportData);
+      if (result) {
+        setImportJson('');
+        setIsImportModalOpen(false);
+        // #region agent log
+        fetch('http://127.0.0.1:7242/ingest/76b1d9bd-7576-473a-9c0f-3ea06293f1d8',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Sidebar.tsx:175',message:'Import successful',data:{collectionName:result.name},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+        // #endregion
+      } else {
+        setImportError('Failed to import collection');
+        // #region agent log
+        fetch('http://127.0.0.1:7242/ingest/76b1d9bd-7576-473a-9c0f-3ea06293f1d8',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Sidebar.tsx:179',message:'Import failed',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+        // #endregion
+      }
+    } catch (error) {
+      setImportError('Invalid JSON format');
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/76b1d9bd-7576-473a-9c0f-3ea06293f1d8',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Sidebar.tsx:183',message:'Import JSON parse error',data:{error:String(error)},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+      // #endregion
     }
   };
 
@@ -157,7 +228,13 @@ export const Sidebar: React.FC = () => {
             </TabButton>
             <TabButton
               $isActive={activeTab === 'history'}
-              onClick={() => setActiveTab('history')}
+              onClick={() => {
+                // #region agent log
+                fetch('http://127.0.0.1:7242/ingest/76b1d9bd-7576-473a-9c0f-3ea06293f1d8',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Sidebar.tsx:160',message:'History tab clicked',data:{previousTab:activeTab,historyLength:history.length},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
+                // #endregion
+                setActiveTab('history');
+              }}
+              data-testid="history-tab-button"
             >
               History
             </TabButton>
@@ -265,38 +342,40 @@ export const Sidebar: React.FC = () => {
         />
       </Modal>
 
-      {/* Placeholder Import Modal */}
+      {/* Import Modal */}
       <Modal
         isOpen={isImportModalOpen}
-        onClose={() => setIsImportModalOpen(false)}
+        onClose={() => {
+          setIsImportModalOpen(false);
+          setImportJson('');
+          setImportError(null);
+        }}
         title="Import Collection"
         size="medium"
         footer={
           <>
-            <Button variant="secondary" onClick={() => setIsImportModalOpen(false)}>Cancel</Button>
-            <Button variant="primary" onClick={() => {
-              // Adding basic logic to handle import if needed or just close
-              // The test expects typing JSON and clicking Import.
-              // IMPORTANT: The Test expects actual import logic.
-              // I'll leave the logic for now or implement a stub.
-
-              // Stub logic: If user typed JSON, we pretend to import?
-              // Actually, I need to implement import since there is verify step.
-
-              // Since I don't see an import function in CollectionContext easily,
-              // I will just mock the success for now by closing?
-              // Wait, test: verify "Imported Collection" is visible.
-              // I MUST implement real import logic.
+            <Button variant="secondary" onClick={() => {
               setIsImportModalOpen(false);
-            }}>Import</Button>
+              setImportJson('');
+              setImportError(null);
+            }}>Cancel</Button>
+            <Button variant="primary" onClick={handleImport}>Import</Button>
           </>
         }
       >
         <p>Paste your collection JSON here:</p>
         <textarea
-          style={{ width: '100%', height: '200px', padding: '8px', border: '1px solid #ccc' }}
-          placeholder="{ ... }"
+          value={importJson}
+          onChange={(e) => {
+            setImportJson(e.target.value);
+            setImportError(null);
+          }}
+          style={{ width: '100%', height: '200px', padding: '8px', border: '1px solid #ccc', fontFamily: 'monospace' }}
+          placeholder='{ "version": "1.0", "collection": { ... } }'
         />
+        {importError && (
+          <p style={{ color: 'red', marginTop: '8px', fontSize: '14px' }}>{importError}</p>
+        )}
       </Modal>
     </>
   );

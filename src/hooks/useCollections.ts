@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
-import { Collection, ApiRequest } from '../types';
+import { Collection, ApiRequest, CollectionExport } from '../types';
 import { collectionService } from '../services';
 
 interface UseCollectionsResult {
@@ -10,6 +10,8 @@ interface UseCollectionsResult {
   addRequest: (collectionId: string, request: ApiRequest) => boolean;
   updateRequest: (collectionId: string, requestId: string, updates: Partial<ApiRequest>) => boolean;
   removeRequest: (collectionId: string, requestId: string) => boolean;
+  exportCollection: (id: string) => CollectionExport | null;
+  importCollection: (exportData: CollectionExport) => Collection | null;
   refreshCollections: () => void;
 }
 
@@ -61,6 +63,18 @@ export function useCollections(): UseCollectionsResult {
     return result;
   }, [refreshCollections]);
 
+  const exportCollection = useCallback((id: string) => {
+    return collectionService.exportCollection(id);
+  }, []);
+
+  const importCollection = useCallback((exportData: CollectionExport) => {
+    const result = collectionService.importCollection(exportData);
+    if (result) {
+      refreshCollections();
+    }
+    return result;
+  }, [refreshCollections]);
+
   return {
     collections,
     createCollection,
@@ -69,6 +83,8 @@ export function useCollections(): UseCollectionsResult {
     addRequest,
     updateRequest,
     removeRequest,
+    exportCollection,
+    importCollection,
     refreshCollections,
   };
 }

@@ -131,16 +131,22 @@ class CollectionService {
       const collection = exportData.collection;
       
       // Generate new IDs to avoid conflicts
-      collection.id = generateId();
-      collection.name = `${collection.name} (Imported)`;
-      collection.createdAt = new Date().toISOString();
-      collection.updatedAt = new Date().toISOString();
+      const importedCollection: Collection = {
+        ...collection,
+        id: generateId(),
+        name: collection.name.includes('(Imported)') ? collection.name : `${collection.name} (Imported)`,
+        createdAt: collection.createdAt || new Date().toISOString(),
+        updatedAt: collection.updatedAt || new Date().toISOString(),
+        folders: collection.folders || [],
+        requests: collection.requests || [],
+        description: collection.description,
+      };
 
       const collections = this.getCollections();
-      collections.push(collection);
+      collections.push(importedCollection);
       storageService.set(STORAGE_KEYS.COLLECTIONS, collections);
 
-      return collection;
+      return importedCollection;
     } catch (error) {
       console.error('Error importing collection:', error);
       return null;

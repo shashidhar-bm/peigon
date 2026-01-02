@@ -19,7 +19,7 @@ const EmptyState = styled.div`
 `;
 
 export const CollectionTree: React.FC = () => {
-  const { collections, deleteCollection, updateCollection } = useCollectionContext();
+  const { collections, deleteCollection, updateCollection, exportCollection } = useCollectionContext();
   const { setCurrentRequest } = useRequestContext();
   const [editingCollection, setEditingCollection] = useState<Collection | null>(null);
   const [newName, setNewName] = useState('');
@@ -47,6 +47,22 @@ export const CollectionTree: React.FC = () => {
     setCurrentRequest(request);
   };
 
+  const handleExport = (collection: Collection) => {
+    const exportData = exportCollection(collection.id);
+    if (exportData) {
+      const dataStr = JSON.stringify(exportData, null, 2);
+      const dataBlob = new Blob([dataStr], { type: 'application/json' });
+      const url = URL.createObjectURL(dataBlob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${collection.name.replace(/[^a-z0-9]/gi, '_')}.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+  };
+
   if (collections.length === 0) {
     return <EmptyState>No collections yet. Create one to get started!</EmptyState>;
   }
@@ -61,6 +77,7 @@ export const CollectionTree: React.FC = () => {
             onEdit={() => handleEdit(collection)}
             onDelete={() => handleDelete(collection.id)}
             onRequestClick={handleRequestClick}
+            onExport={handleExport}
           />
         ))}
       </TreeContainer>

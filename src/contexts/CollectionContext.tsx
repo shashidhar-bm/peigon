@@ -1,5 +1,5 @@
 import React, { createContext, useContext, ReactNode } from 'react';
-import { Collection, ApiRequest } from '../types';
+import { Collection, ApiRequest, CollectionExport } from '../types';
 import { useCollections } from '../hooks';
 
 interface CollectionContextType {
@@ -10,6 +10,8 @@ interface CollectionContextType {
   addRequest: (collectionId: string, request: ApiRequest) => boolean;
   updateRequest: (collectionId: string, requestId: string, updates: Partial<ApiRequest>) => boolean;
   removeRequest: (collectionId: string, requestId: string) => boolean;
+  exportCollection: (id: string) => CollectionExport | null;
+  importCollection: (exportData: CollectionExport) => Collection | null;
   refreshCollections: () => void;
 }
 
