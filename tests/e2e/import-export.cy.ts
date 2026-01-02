@@ -108,13 +108,22 @@ describe('Import and Export', () => {
 
         // Save request
         cy.contains('button', /save|save request/i).click({ force: true });
-        cy.get('input[placeholder*="name" i], input[placeholder*="request" i]').first().type('Detailed Request', { force: true });
-        cy.contains('button', /save|confirm/i).click({ force: true });
+        // Wait for modal to open and collection to be auto-selected
+        cy.wait(1000);
+        // Type request name
+        cy.get('input[placeholder*="name" i], input[placeholder*="request" i]', { timeout: 2000 }).first().type('Detailed Request', { force: true });
+        // Verify Save button is enabled and click it
+        cy.contains('button', /^Save$/i).should('not.be.disabled').click({ force: true });
+
+        // Wait for modal to close and collection to refresh
+        cy.wait(2000);
 
         // Export and re-import would verify preservation
         // For now, just verify the request was saved with all details
-        // Collection is expanded by default, clicking it might toggle it closed, so we don't click 'Detailed Collection'
-        cy.contains('Detailed Request').click({ force: true });
-        cy.get('[data-testid="method-selector"]').should('have.value', 'POST');
+        // Collection is expanded by default, so the request should be visible
+        // Look for the request name - it should appear in the collection tree
+        cy.contains('Detailed Request', { timeout: 5000 }).should('be.visible').click({ force: true });
+        // Verify the method was preserved
+        cy.get('[data-testid="method-selector"]', { timeout: 3000 }).should('have.value', 'POST');
     });
 });

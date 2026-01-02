@@ -8,6 +8,8 @@ describe('History Management', () => {
             win.localStorage.removeItem('peigen_data_history');
         });
         cy.reload();
+        // Click History tab first
+        cy.contains('button', 'History').click({ force: true });
         // Verify history is empty initially
         cy.contains('No request history').should('be.visible');
     });
@@ -134,6 +136,7 @@ describe('History Management', () => {
         cy.contains('button', 'History').click({ force: true });
 
         // Verify timestamp is shown (looking for time-related text)
-        cy.contains(/\d{1,2}:\d{2}|ago|today|yesterday/i).should('be.visible');
+        // The timestamp could be "Just now", "Xm ago", "HH:MM", "Yesterday", or a date
+        cy.contains(/just now|\d+m ago|\d{1,2}:\d{2}|yesterday|today|\d{1,2}\/\d{1,2}\/\d{4}/i, { timeout: 5000 }).should('be.visible');
     });
 });

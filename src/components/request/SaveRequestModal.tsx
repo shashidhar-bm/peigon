@@ -21,18 +21,29 @@ export const SaveRequestModal: React.FC<SaveRequestModalProps> = ({
     useEffect(() => {
         if (isOpen) {
             setName(request.name || '');
-            if (collections.length > 0 && !selectedCollectionId) {
-                setSelectedCollectionId(collections[0].id);
+            // Always select the first collection if available
+            if (collections.length > 0) {
+                const firstCollectionId = collections[0].id;
+                // Only update if not already set to a valid collection
+                if (!selectedCollectionId || !collections.find(c => c.id === selectedCollectionId)) {
+                    setSelectedCollectionId(firstCollectionId);
+                }
+            } else {
+                setSelectedCollectionId('');
             }
         }
-    }, [isOpen, request, collections, selectedCollectionId]);
+    }, [isOpen, request, collections.length]);
 
     const handleSave = () => {
         if (!selectedCollectionId) return;
 
+        const now = new Date().toISOString();
         const requestToSave: ApiRequest = {
             ...request,
+            id: request.id || `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
             name: name || request.url || 'Untitled Request',
+            createdAt: request.createdAt || now,
+            updatedAt: now,
         };
 
         addRequest(selectedCollectionId, requestToSave);

@@ -42,19 +42,21 @@ export const EnvironmentModal: React.FC<EnvironmentModalProps> = ({
     onClose,
     editingEnvironment,
 }) => {
-    const { createEnvironment, updateEnvironment, setCurrentEnvironment } = useEnvironmentContext();
+    const { createEnvironment, updateEnvironment, setCurrentEnvironment, environments } = useEnvironmentContext();
     const [name, setName] = useState('');
     const [variables, setVariables] = useState<EnvironmentVariable[]>([]);
 
     useEffect(() => {
-        if (editingEnvironment) {
-            setName(editingEnvironment.name);
-            setVariables(editingEnvironment.variables ? [...editingEnvironment.variables] : []);
-        } else {
+        if (editingEnvironment && isOpen) {
+            // Reload environment data in case it was updated
+            const freshEnv = environments.find(env => env.id === editingEnvironment.id) || editingEnvironment;
+            setName(freshEnv.name);
+            setVariables(freshEnv.variables ? [...freshEnv.variables] : []);
+        } else if (!editingEnvironment && isOpen) {
             setName('');
             setVariables([]);
         }
-    }, [editingEnvironment, isOpen]);
+    }, [editingEnvironment, isOpen, environments]);
 
     const handleSave = () => {
         if (!name.trim()) return;

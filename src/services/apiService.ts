@@ -63,11 +63,33 @@ class ApiService {
       const responseTime = Date.now() - startTime;
       const responseSize = this.calculateResponseSize(response);
 
+      // Convert axios headers to plain object
+      // Axios response.headers can be an AxiosHeaders object or plain object
+      const responseHeaders: Record<string, string> = {};
+      if (response.headers) {
+        // Handle AxiosHeaders object (has forEach method) or plain object
+        const headersObj = response.headers as any;
+        if (headersObj && typeof headersObj.forEach === 'function') {
+          // It's an AxiosHeaders object
+          headersObj.forEach((value: any, key: string) => {
+            responseHeaders[key] = String(value);
+          });
+        } else if (headersObj && typeof headersObj === 'object') {
+          // It's a plain object
+          Object.keys(headersObj).forEach(key => {
+            const value = headersObj[key];
+            if (value !== undefined && value !== null) {
+              responseHeaders[key] = String(value);
+            }
+          });
+        }
+      }
+
       // Build API response
       return {
         status: response.status,
         statusText: response.statusText,
-        headers: response.headers as Record<string, string>,
+        headers: responseHeaders,
         data: response.data,
         responseTime,
         responseSize,

@@ -11,21 +11,21 @@ describe('Full User Journey', () => {
     it('should complete a full realistic API testing workflow', () => {
         // STEP 1: Create an environment with variables
         cy.log('Creating environment with variables');
-        cy.contains('button', /new environment|add environment/i).click();
-        cy.get('input').first().type('Development');
-        cy.contains('button', /create|save/i).click();
-
-        // Add baseUrl variable
-        cy.contains('button', /add variable|new variable/i).click();
-        cy.get('input[placeholder*="key" i], input[placeholder*="name" i]').first().type('baseUrl');
-        cy.get('input[placeholder*="value" i]').first().type('https://jsonplaceholder.typicode.com');
-        cy.contains('button', /save|add/i).click();
+        cy.get('[data-testid="new-environment-btn"]').click();
+        cy.get('[data-testid="env-name-input"]').type('Development');
+        
+        // Add baseUrl variable before saving
+        cy.get('[data-testid="add-variable-btn"]').click();
+        cy.get('input[placeholder="Key"]').first().type('baseUrl');
+        cy.get('input[placeholder="Value"]').first().type('https://jsonplaceholder.typicode.com');
 
         // Add userId variable
-        cy.contains('button', /add variable|new variable/i).click();
-        cy.get('input[placeholder*="key" i], input[placeholder*="name" i]').last().type('userId');
-        cy.get('input[placeholder*="value" i]').last().type('1');
-        cy.contains('button', /save|add/i).click();
+        cy.get('[data-testid="add-variable-btn"]').click();
+        cy.get('input[placeholder="Key"]').last().type('userId');
+        cy.get('input[placeholder="Value"]').last().type('1');
+        
+        // Now save the environment with variables
+        cy.contains('button', /^Create$|^Save$/i).click();
 
         // STEP 2: Create a collection
         cy.log('Creating collection');

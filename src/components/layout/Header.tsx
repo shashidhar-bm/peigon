@@ -79,7 +79,7 @@ export const Header: React.FC = () => {
 
   const environmentOptions = [
     { value: '', label: 'No Environment' },
-    ...environments.map(env => ({ value: env.id, label: env.name })),
+    ...environments.map(env => ({ value: env.name, label: env.name })),
   ];
 
   const handleNewEnvironment = () => {
@@ -105,8 +105,11 @@ export const Header: React.FC = () => {
           <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
             <Select
               data-testid="environment-selector"
-              value={currentEnvironment?.id || ''}
-              onChange={(e) => setCurrentEnvironment(e.target.value || null)}
+              value={currentEnvironment?.name || ''}
+              onChange={(e) => {
+                const env = environments.find(env => env.name === e.target.value);
+                setCurrentEnvironment(env ? env.id : null);
+              }}
               options={environmentOptions}
               style={{ minWidth: '150px' }}
             />

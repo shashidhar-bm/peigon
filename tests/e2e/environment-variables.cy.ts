@@ -47,10 +47,16 @@ describe('Environment Variables', () => {
         // Save variable
         cy.contains('button', /^Save$/i).click();
 
+        // Wait for modal to close
+        cy.get('body').should('not.contain', 'Environment Name');
+
         // Re-open variables modal to verify persistence
         cy.get('[data-testid="edit-environment-btn"]').click();
-        cy.contains('baseUrl');
-        cy.contains('https://api.example.com');
+        // Wait for modal to open and variables to load
+        cy.get('[data-testid="add-variable-btn"]').should('be.visible');
+        // Check for variable key and value in input fields
+        cy.get('input[value="baseUrl"]').should('exist');
+        cy.get('input[value="https://api.example.com"]').should('exist');
     });
 
     it('should use environment variables in URL', () => {
