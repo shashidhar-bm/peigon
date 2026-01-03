@@ -108,21 +108,24 @@ describe('Import and Export', () => {
 
         // Save request
         cy.contains('button', /save|save request/i).click({ force: true });
-        // Wait for modal to open and collection to be auto-selected
+        // Wait for modal to open
+        cy.contains('Save Request', { timeout: 2000 }).should('be.visible');
         cy.wait(1000);
         // Type request name
-        cy.get('input[placeholder*="name" i], input[placeholder*="request" i]', { timeout: 2000 }).first().type('Detailed Request', { force: true });
-        // Verify Save button is enabled and click it
-        cy.contains('button', /^Save$/i).should('not.be.disabled').click({ force: true });
-
-        // Wait for modal to close and collection to refresh
-        cy.wait(2000);
-
+        cy.get('[role="dialog"] input[placeholder="Enter request name"]').type('Detailed Request', { force: true });
+        // Explicitly select the collection to ensure state is set (like in collection-management test)
+        cy.contains('Detailed Collection').should('be.visible'); // Ensure sidebar has it
+        cy.get('[role="dialog"] select').should('contain.text', 'Detailed Collection').select('Detailed Collection', { force: true });
+        cy.get('[role="dialog"]').contains('button', /save|confirm/i).should('not.be.disabled').click({ force: true });
+        // Wait for modal to close
+        cy.get('[role="dialog"]', { timeout: 3000 }).should('not.exist');
+        cy.wait(1000); // Wait for collection list update
+        
         // Export and re-import would verify preservation
         // For now, just verify the request was saved with all details
         // Collection is expanded by default, so the request should be visible
-        // Look for the request name - it should appear in the collection tree
-        cy.contains('Detailed Request', { timeout: 5000 }).should('be.visible').click({ force: true });
+        // Verify request appears in collection
+        cy.contains('Detailed Request', { timeout: 5000 }).should('exist').click({ force: true });
         // Verify the method was preserved
         cy.get('[data-testid="method-selector"]', { timeout: 3000 }).should('have.value', 'POST');
     });

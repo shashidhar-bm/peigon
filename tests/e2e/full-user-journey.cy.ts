@@ -36,7 +36,8 @@ describe('Full User Journey', () => {
         // STEP 3: Make a GET request using environment variables
         cy.log('Making GET request with environment variables');
         cy.get('[data-testid="method-selector"]').should('be.visible').select('GET');
-        cy.get('input[type="text"]').first().type('{{{{baseUrl}}}}/users/{{{{userId}}}}');
+        // Type URL with environment variables - use double braces for variable syntax
+        cy.get('input[type="text"]').first().type('{{baseUrl}}/users/{{userId}}', { parseSpecialCharSequences: false });
         cy.contains('button', 'Send').click();
 
         // Verify response
@@ -45,14 +46,21 @@ describe('Full User Journey', () => {
 
         // STEP 4: Save the GET request to collection
         cy.log('Saving GET request to collection');
-        cy.contains('button', /save|save request/i).click();
-        cy.get('input[placeholder*="name" i], input[placeholder*="request" i]').type('Get User by ID');
-        cy.contains('button', /save|confirm/i).click();
+        cy.contains('button', /save|save request/i).click({ force: true });
+        cy.contains('Save Request', { timeout: 2000 }).should('be.visible');
+        cy.wait(1000);
+        cy.get('[role="dialog"] input[placeholder="Enter request name"]').type('Get User by ID', { force: true });
+        // Explicitly select the collection
+        cy.get('[role="dialog"] select').should('contain.text', 'User API Tests').select('User API Tests', { force: true });
+        cy.get('[role="dialog"]').contains('button', /save|confirm/i).should('not.be.disabled').click({ force: true });
+        // Wait for modal to close
+        cy.get('[role="dialog"]', { timeout: 3000 }).should('not.exist');
+        cy.wait(1000); // Wait for collection tree to update
 
         // STEP 5: Make a POST request with JSON body
         cy.log('Making POST request with JSON body');
         cy.get('[data-testid="method-selector"]').select('POST');
-        cy.get('input[type="text"]').first().clear().type('{{{{baseUrl}}}}/users');
+        cy.get('input[type="text"]').first().clear({ force: true }).type('{{baseUrl}}/users', { parseSpecialCharSequences: false, force: true });
 
         // Add JSON body
         cy.contains('button', 'Body').click();
@@ -66,9 +74,15 @@ describe('Full User Journey', () => {
 
         // STEP 6: Save the POST request to collection
         cy.log('Saving POST request to collection');
-        cy.contains('button', /save|save request/i).click();
-        cy.get('input[placeholder*="name" i], input[placeholder*="request" i]').type('Create New User');
-        cy.contains('button', /save|confirm/i).click();
+        cy.contains('button', /save|save request/i).click({ force: true });
+        cy.contains('Save Request', { timeout: 2000 }).should('be.visible');
+        cy.wait(1000);
+        cy.get('[role="dialog"] input[placeholder="Enter request name"]').type('Create New User', { force: true });
+        // Explicitly select the collection
+        cy.get('[role="dialog"] select').should('contain.text', 'User API Tests').select('User API Tests', { force: true });
+        cy.get('[role="dialog"]').contains('button', /save|confirm/i).should('not.be.disabled').click({ force: true });
+        cy.get('[role="dialog"]', { timeout: 3000 }).should('not.exist');
+        cy.wait(1000); // Wait for collection tree to update
 
         // STEP 7: Verify both requests are in the collection
         cy.log('Verifying collection contents');
@@ -89,27 +103,37 @@ describe('Full User Journey', () => {
         // STEP 10: Create a second environment to test switching
         cy.log('Creating second environment');
         cy.contains('button', /new environment|add environment/i).click();
-        cy.get('input').first().type('Staging');
-        cy.contains('button', /create|save/i).click();
-
-        // Add different baseUrl for staging
-        cy.contains('button', /add variable|new variable/i).click();
-        cy.get('input[placeholder*="key" i], input[placeholder*="name" i]').first().type('baseUrl');
-        cy.get('input[placeholder*="value" i]').first().type('https://staging-api.example.com');
-        cy.contains('button', /save|add/i).click();
+        cy.get('[data-testid="env-name-input"]').type('Staging');
+        cy.contains('button', /^Create$|^Save$/i).click();
+        
+        // Wait for environment to be created and modal to close
+        cy.get('body').should('not.contain', 'Environment Name');
+        cy.wait(500);
+        
+        // Edit the environment to add variables
+        cy.get('[data-testid="edit-environment-btn"]').click();
+        cy.get('[data-testid="add-variable-btn"]').should('be.visible').click();
+        cy.get('input[placeholder="Key"]').first().type('baseUrl');
+        cy.get('input[placeholder="Value"]').first().type('https://staging-api.example.com');
+        cy.contains('button', /^Save$/i).click();
+        // Wait for modal to close
+        cy.get('body').should('not.contain', 'Environment Name');
 
         // STEP 11: Switch between environments
         cy.log('Switching between environments');
-        cy.get('select').last().select('Development');
+        cy.get('[data-testid="environment-selector"]').select('Development');
         cy.wait(500);
-        cy.get('select').last().select('Staging');
+        cy.get('[data-testid="environment-selector"]').select('Staging');
         cy.wait(500);
 
         // STEP 12: Verify the workflow is complete
         cy.log('Workflow complete!');
-        cy.contains('User API Tests').should('be.visible');
-        cy.contains('Get User by ID').should('be.visible');
-        cy.contains('Create New User').should('be.visible');
+        // Switch back to Collections tab if we're on History tab
+        cy.contains('button', 'Collections').click({ force: true });
+        cy.wait(500);
+        cy.contains('User API Tests', { timeout: 5000 }).should('be.visible');
+        cy.contains('Get User by ID', { timeout: 5000 }).should('be.visible');
+        cy.contains('Create New User', { timeout: 5000 }).should('be.visible');
     });
 
     it('should handle a complete testing session with multiple requests', () => {

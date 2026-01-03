@@ -24,15 +24,16 @@ export const SaveRequestModal: React.FC<SaveRequestModalProps> = ({
             // Always select the first collection if available
             if (collections.length > 0) {
                 const firstCollectionId = collections[0].id;
-                // Only update if not already set to a valid collection
-                if (!selectedCollectionId || !collections.find(c => c.id === selectedCollectionId)) {
-                    setSelectedCollectionId(firstCollectionId);
-                }
+                setSelectedCollectionId(firstCollectionId);
             } else {
                 setSelectedCollectionId('');
             }
+        } else {
+            // Reset when modal closes
+            setName('');
+            setSelectedCollectionId('');
         }
-    }, [isOpen, request, collections.length]);
+    }, [isOpen, request.name, collections.length]);
 
     const handleSave = () => {
         if (!selectedCollectionId) return;
