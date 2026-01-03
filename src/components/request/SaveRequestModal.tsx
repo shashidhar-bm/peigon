@@ -33,7 +33,7 @@ export const SaveRequestModal: React.FC<SaveRequestModalProps> = ({
             setName('');
             setSelectedCollectionId('');
         }
-    }, [isOpen, request.name, collections.length]);
+    }, [isOpen, request.name, collections]);
 
     const handleSave = () => {
         if (!selectedCollectionId) return;

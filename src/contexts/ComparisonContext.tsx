@@ -47,15 +47,15 @@ export const ComparisonProvider: React.FC<ComparisonProviderProps> = ({ children
     const [comparisonResult, setComparisonResult] = useState<ComparisonResult | null>(null);
     const [viewMode, setViewMode] = useState<ComparisonViewMode>('side-by-side');
 
-    // Load saved responses on mount
-    useEffect(() => {
-        refreshSavedResponses();
-    }, []);
-
     const refreshSavedResponses = useCallback(() => {
         const responses = comparisonService.getSavedResponses();
         setSavedResponses(responses);
     }, []);
+
+    // Load saved responses on mount
+    useEffect(() => {
+        refreshSavedResponses();
+    }, [refreshSavedResponses]);
 
     const saveCurrentResponse = useCallback((name: string) => {
         if (!response) {
