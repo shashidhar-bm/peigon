@@ -1,16 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
-import { Button, Modal, Input } from '../common';
+import { Button, Modal, Input, Resizer } from '../common';
 import { useCollectionContext, useHistoryContext, useRequestContext } from '../../contexts';
 import { CollectionTree } from '../collections/CollectionTree';
 
-const SidebarContainer = styled.aside`
-  width: 300px;
-  background: ${({ theme }) => theme.colors.sidebarBg};
-  border-right: 1px solid ${({ theme }) => theme.colors.border};
+const SidebarWrapper = styled.aside<{ width: number }>`
+  width: ${({ width }) => width}px;
+  display: flex; /* Row layout to put content and resizer side-by-side */
+  flex-direction: row;
+  flex-shrink: 0;
+  position: relative;
+`;
+
+const SidebarInner = styled.div`
+  flex: 1;
   display: flex;
   flex-direction: column;
-  flex-shrink: 0;
+  background: ${({ theme }) => theme.colors.sidebarBg};
+  border-right: 1px solid ${({ theme }) => theme.colors.border};
   overflow: hidden;
 `;
 
@@ -135,30 +142,39 @@ export const Sidebar: React.FC = () => {
   const { history, clearHistory } = useHistoryContext();
   const { setCurrentRequest, setResponse, clearResponse: clearRequestResponse } = useRequestContext();
 
+  const [width, setWidth] = useState(300);
+
+  const handleResize = useCallback((delta: number) => {
+    setWidth(prev => {
+      const newWidth = prev + delta;
+      return Math.min(Math.max(newWidth, 200), 600); // Clamp between 200px and 600px
+    });
+  }, []);
+
   // #region agent log
-  fetch('http://127.0.0.1:7242/ingest/76b1d9bd-7576-473a-9c0f-3ea06293f1d8',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Sidebar.tsx:126',message:'Sidebar rendered',data:{activeTab,historyLength:history.length,isModalOpen,isImportModalOpen},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
+  fetch('http://127.0.0.1:7242/ingest/76b1d9bd-7576-473a-9c0f-3ea06293f1d8', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ location: 'Sidebar.tsx:126', message: 'Sidebar rendered', data: { activeTab, historyLength: history.length, isModalOpen, isImportModalOpen }, timestamp: Date.now(), sessionId: 'debug-session', runId: 'run1', hypothesisId: 'C' }) }).catch(() => { });
   // #endregion
 
   const handleCreateCollection = () => {
     // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/76b1d9bd-7576-473a-9c0f-3ea06293f1d8',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Sidebar.tsx:139',message:'handleCreateCollection called',data:{collectionName:collectionName.trim()},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+    fetch('http://127.0.0.1:7242/ingest/76b1d9bd-7576-473a-9c0f-3ea06293f1d8', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ location: 'Sidebar.tsx:139', message: 'handleCreateCollection called', data: { collectionName: collectionName.trim() }, timestamp: Date.now(), sessionId: 'debug-session', runId: 'run1', hypothesisId: 'A' }) }).catch(() => { });
     // #endregion
     if (collectionName.trim()) {
       createCollection(collectionName);
       setCollectionName('');
       setIsModalOpen(false);
       // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/76b1d9bd-7576-473a-9c0f-3ea06293f1d8',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Sidebar.tsx:145',message:'Collection created',data:{collectionName},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+      fetch('http://127.0.0.1:7242/ingest/76b1d9bd-7576-473a-9c0f-3ea06293f1d8', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ location: 'Sidebar.tsx:145', message: 'Collection created', data: { collectionName }, timestamp: Date.now(), sessionId: 'debug-session', runId: 'run1', hypothesisId: 'A' }) }).catch(() => { });
       // #endregion
     }
   };
 
   const handleImport = () => {
     // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/76b1d9bd-7576-473a-9c0f-3ea06293f1d8',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Sidebar.tsx:156',message:'handleImport called',data:{jsonLength:importJson.length},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+    fetch('http://127.0.0.1:7242/ingest/76b1d9bd-7576-473a-9c0f-3ea06293f1d8', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ location: 'Sidebar.tsx:156', message: 'handleImport called', data: { jsonLength: importJson.length }, timestamp: Date.now(), sessionId: 'debug-session', runId: 'run1', hypothesisId: 'A' }) }).catch(() => { });
     // #endregion
     setImportError(null);
-    
+
     if (!importJson.trim()) {
       setImportError('Please paste collection JSON');
       return;
@@ -189,7 +205,7 @@ export const Sidebar: React.FC = () => {
       } else {
         setImportError('Invalid collection format');
         // #region agent log
-        fetch('http://127.0.0.1:7242/ingest/76b1d9bd-7576-473a-9c0f-3ea06293f1d8',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Sidebar.tsx:170',message:'Import validation failed',data:{hasCollection:!!parsed.collection,hasName:!!parsed.name},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+        fetch('http://127.0.0.1:7242/ingest/76b1d9bd-7576-473a-9c0f-3ea06293f1d8', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ location: 'Sidebar.tsx:170', message: 'Import validation failed', data: { hasCollection: !!parsed.collection, hasName: !!parsed.name }, timestamp: Date.now(), sessionId: 'debug-session', runId: 'run1', hypothesisId: 'A' }) }).catch(() => { });
         // #endregion
         return;
       }
@@ -199,121 +215,124 @@ export const Sidebar: React.FC = () => {
         setImportJson('');
         setIsImportModalOpen(false);
         // #region agent log
-        fetch('http://127.0.0.1:7242/ingest/76b1d9bd-7576-473a-9c0f-3ea06293f1d8',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Sidebar.tsx:175',message:'Import successful',data:{collectionName:result.name},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+        fetch('http://127.0.0.1:7242/ingest/76b1d9bd-7576-473a-9c0f-3ea06293f1d8', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ location: 'Sidebar.tsx:175', message: 'Import successful', data: { collectionName: result.name }, timestamp: Date.now(), sessionId: 'debug-session', runId: 'run1', hypothesisId: 'A' }) }).catch(() => { });
         // #endregion
       } else {
         setImportError('Failed to import collection');
         // #region agent log
-        fetch('http://127.0.0.1:7242/ingest/76b1d9bd-7576-473a-9c0f-3ea06293f1d8',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Sidebar.tsx:179',message:'Import failed',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+        fetch('http://127.0.0.1:7242/ingest/76b1d9bd-7576-473a-9c0f-3ea06293f1d8', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ location: 'Sidebar.tsx:179', message: 'Import failed', data: {}, timestamp: Date.now(), sessionId: 'debug-session', runId: 'run1', hypothesisId: 'A' }) }).catch(() => { });
         // #endregion
       }
     } catch (error) {
       setImportError('Invalid JSON format');
       // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/76b1d9bd-7576-473a-9c0f-3ea06293f1d8',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Sidebar.tsx:183',message:'Import JSON parse error',data:{error:String(error)},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+      fetch('http://127.0.0.1:7242/ingest/76b1d9bd-7576-473a-9c0f-3ea06293f1d8', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ location: 'Sidebar.tsx:183', message: 'Import JSON parse error', data: { error: String(error) }, timestamp: Date.now(), sessionId: 'debug-session', runId: 'run1', hypothesisId: 'A' }) }).catch(() => { });
       // #endregion
     }
   };
 
   return (
     <>
-      <SidebarContainer>
-        <SidebarHeader>
-          <TabButtons>
-            <TabButton
-              $isActive={activeTab === 'collections'}
-              onClick={() => setActiveTab('collections')}
-            >
-              Collections
-            </TabButton>
-            <TabButton
-              $isActive={activeTab === 'history'}
-              onClick={() => {
-                // #region agent log
-                fetch('http://127.0.0.1:7242/ingest/76b1d9bd-7576-473a-9c0f-3ea06293f1d8',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Sidebar.tsx:160',message:'History tab clicked',data:{previousTab:activeTab,historyLength:history.length},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
-                // #endregion
-                setActiveTab('history');
-              }}
-              data-testid="history-tab-button"
-            >
-              History
-            </TabButton>
-          </TabButtons>
-
-          {activeTab === 'collections' && (
-            <div style={{ display: 'flex', gap: '8px' }}>
-              <Button
-                variant="primary"
-                size="small"
-                style={{ flex: 1 }}
-                onClick={() => setIsModalOpen(true)}
+      <SidebarWrapper width={width}>
+        <SidebarInner>
+          <SidebarHeader>
+            <TabButtons>
+              <TabButton
+                $isActive={activeTab === 'collections'}
+                onClick={() => setActiveTab('collections')}
               >
-                New Collection
-              </Button>
+                Collections
+              </TabButton>
+              <TabButton
+                $isActive={activeTab === 'history'}
+                onClick={() => {
+                  // #region agent log
+                  fetch('http://127.0.0.1:7242/ingest/76b1d9bd-7576-473a-9c0f-3ea06293f1d8', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ location: 'Sidebar.tsx:160', message: 'History tab clicked', data: { previousTab: activeTab, historyLength: history.length }, timestamp: Date.now(), sessionId: 'debug-session', runId: 'run1', hypothesisId: 'C' }) }).catch(() => { });
+                  // #endregion
+                  setActiveTab('history');
+                }}
+                data-testid="history-tab-button"
+              >
+                History
+              </TabButton>
+            </TabButtons>
+
+            {activeTab === 'collections' && (
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <Button
+                  variant="primary"
+                  size="small"
+                  style={{ flex: 1 }}
+                  onClick={() => setIsModalOpen(true)}
+                >
+                  New Collection
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="small"
+                  onClick={() => setIsImportModalOpen(true)}
+                  title="Import Collection"
+                >
+                  Import
+                </Button>
+              </div>
+            )}
+
+            {activeTab === 'history' && history.length > 0 && (
               <Button
                 variant="secondary"
                 size="small"
-                onClick={() => setIsImportModalOpen(true)}
-                title="Import Collection"
+                fullWidth
+                onClick={() => {
+                  if (window.confirm('Are you sure you want to clear your request history?')) {
+                    clearHistory();
+                  }
+                }}
               >
-                Import
+                Clear History
               </Button>
-            </div>
-          )}
+            )}
+          </SidebarHeader>
 
-          {activeTab === 'history' && history.length > 0 && (
-            <Button
-              variant="secondary"
-              size="small"
-              fullWidth
-              onClick={() => {
-                if (window.confirm('Are you sure you want to clear your request history?')) {
-                  clearHistory();
-                }
-              }}
-            >
-              Clear History
-            </Button>
-          )}
-        </SidebarHeader>
-
-        <SidebarContent>
-          {activeTab === 'collections' ? (
-            <CollectionTree />
-          ) : (
-            history.length === 0 ? (
-              <EmptyState>No request history</EmptyState>
+          <SidebarContent>
+            {activeTab === 'collections' ? (
+              <CollectionTree />
             ) : (
-              <HistoryList>
-                {history.map(entry => (
-                  <HistoryItem
-                    key={entry.id}
-                    onClick={() => {
-                      // Restore request
-                      setCurrentRequest(entry.request);
+              history.length === 0 ? (
+                <EmptyState>No request history</EmptyState>
+              ) : (
+                <HistoryList>
+                  {history.map(entry => (
+                    <HistoryItem
+                      key={entry.id}
+                      onClick={() => {
+                        // Restore request
+                        setCurrentRequest(entry.request);
 
-                      // Restore response if available
-                      if (entry.response) {
-                        setResponse(entry.response);
-                      } else {
-                        clearRequestResponse();
-                      }
-                    }}
-                  >
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <HistoryMethod $method={entry.request.method}>
-                        {entry.request.method}
-                      </HistoryMethod>
-                      <HistoryTimestamp>{formatHistoryTime(entry.timestamp)}</HistoryTimestamp>
-                    </div>
-                    <HistoryUrl>{entry.request.url || 'Untitled Request'}</HistoryUrl>
-                  </HistoryItem>
-                ))}
-              </HistoryList>
-            )
-          )}
-        </SidebarContent>
-      </SidebarContainer>
+                        // Restore response if available
+                        if (entry.response) {
+                          setResponse(entry.response);
+                        } else {
+                          clearRequestResponse();
+                        }
+                      }}
+                    >
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <HistoryMethod $method={entry.request.method}>
+                          {entry.request.method}
+                        </HistoryMethod>
+                        <HistoryTimestamp>{formatHistoryTime(entry.timestamp)}</HistoryTimestamp>
+                      </div>
+                      <HistoryUrl>{entry.request.url || 'Untitled Request'}</HistoryUrl>
+                    </HistoryItem>
+                  ))}
+                </HistoryList>
+              )
+            )}
+          </SidebarContent>
+        </SidebarInner>
+        <Resizer direction="horizontal" onResize={handleResize} />
+      </SidebarWrapper>
 
       <Modal
         isOpen={isModalOpen}

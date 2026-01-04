@@ -1,7 +1,8 @@
-export { Button } from './Button';
-export { Input } from './Input';
-export { Select } from './Select';
-export { Textarea } from './Textarea';
-export { Modal } from './Modal';
-export { Tabs } from './Tabs';
-export { KeyValuePairList } from './KeyValuePairList';
+export * from './Button';
+export * from './Input';
+export * from './Select';
+export * from './Modal';
+export * from './Tabs';
+export * from './Textarea';
+export * from './KeyValuePairList';
+export * from './Resizer';

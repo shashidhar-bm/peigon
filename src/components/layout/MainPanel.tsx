@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { RequestBuilder } from '../request/RequestBuilder';
 import { ResponseViewer } from '../response/ResponseViewer';
+import { Resizer } from '../common';
 
 const MainContainer = styled.main`
   flex: 1;
@@ -18,17 +19,17 @@ const SplitPanel = styled.div`
   overflow: hidden;
 `;
 
-const RequestSection = styled.div`
-  flex: 1;
-  min-height: 300px;
+const RequestSection = styled.div<{ height?: string, flex?: number }>`
+  ${({ height, flex }) => height ? `height: ${height};` : `flex: ${flex || 1};`}
+  min-height: 100px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
 `;
 
-const ResponseSection = styled.div`
-  flex: 1;
-  min-height: 300px;
+const ResponseSection = styled.div<{ height?: string, flex?: number }>`
+  ${({ height, flex }) => height ? `height: ${height};` : `flex: ${flex || 1};`}
+  min-height: 100px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -36,13 +37,25 @@ const ResponseSection = styled.div`
 `;
 
 export const MainPanel: React.FC = () => {
+  const [requestHeight, setRequestHeight] = useState<number | null>(null);
+
+  const handleResize = useCallback((delta: number) => {
+    setRequestHeight(prev => {
+      // If we haven't resized yet, start from approx 50%
+      const currentHeight = prev ?? (window.innerHeight - 100) / 2;
+      const newHeight = currentHeight + delta;
+      return Math.max(100, newHeight); // Minimum 100px
+    });
+  }, []);
+
   return (
     <MainContainer>
       <SplitPanel>
-        <RequestSection>
+        <RequestSection height={requestHeight ? `${requestHeight}px` : undefined} data-testid="request-section">
           <RequestBuilder />
         </RequestSection>
-        <ResponseSection>
+        <Resizer direction="vertical" onResize={handleResize} />
+        <ResponseSection flex={1} data-testid="response-section">
           <ResponseViewer />
         </ResponseSection>
       </SplitPanel>
