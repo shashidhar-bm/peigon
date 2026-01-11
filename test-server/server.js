@@ -117,6 +117,36 @@ app.post('/api/users', (req, res) => {
   });
 });
 
+// PUT update user (without ID in URL)
+app.put('/api/users', (req, res) => {
+  const { id } = req.body;
+  const userId = parseInt(id);
+
+  if (!id || isNaN(userId)) {
+    return res.status(400).json({
+      success: false,
+      message: 'User ID is required in the request body'
+    });
+  }
+
+  const userIndex = users.findIndex(u => u.id === userId);
+
+  if (userIndex === -1) {
+    return res.status(404).json({
+      success: false,
+      message: 'User not found'
+    });
+  }
+
+  users[userIndex] = { ...users[userIndex], ...req.body, id: userId };
+
+  res.json({
+    success: true,
+    message: 'User updated successfully',
+    data: users[userIndex]
+  });
+});
+
 // PUT update user
 app.put('/api/users/:id', (req, res) => {
   const userId = parseInt(req.params.id);

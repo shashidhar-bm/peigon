@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
+import { Chatbot } from './Chatbot';
 import { Button, Modal, Input, Resizer } from '../common';
 import { useCollectionContext, useHistoryContext, useRequestContext } from '../../contexts';
 import { CollectionTree } from '../collections/CollectionTree';
@@ -131,7 +132,7 @@ const formatHistoryTime = (isoString: string) => {
 };
 
 export const Sidebar: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'collections' | 'history'>('collections');
+  const [activeTab, setActiveTab] = useState<'collections' | 'history' | 'chat'>('collections');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [collectionName, setCollectionName] = useState('');
@@ -255,6 +256,12 @@ export const Sidebar: React.FC = () => {
               >
                 History
               </TabButton>
+              <TabButton
+                $isActive={activeTab === 'chat'}
+                onClick={() => setActiveTab('chat')}
+              >
+                Chat
+              </TabButton>
             </TabButtons>
 
             {activeTab === 'collections' && (
@@ -297,7 +304,7 @@ export const Sidebar: React.FC = () => {
           <SidebarContent>
             {activeTab === 'collections' ? (
               <CollectionTree />
-            ) : (
+            ) : activeTab === 'history' ? (
               history.length === 0 ? (
                 <EmptyState>No request history</EmptyState>
               ) : (
@@ -328,6 +335,8 @@ export const Sidebar: React.FC = () => {
                   ))}
                 </HistoryList>
               )
+            ) : (
+              <Chatbot />
             )}
           </SidebarContent>
         </SidebarInner>

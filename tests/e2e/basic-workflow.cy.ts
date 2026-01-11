@@ -58,5 +58,12 @@ describe('Basic Workflow', () => {
     cy.contains('button', 'History').click();
     cy.contains('No request history').should('be.visible');
   });
+
+  it('should open the chatbot', () => {
+    cy.contains('button', 'Chat').click();
+    cy.contains("Hello! I'm Peigen AI").should('be.visible');
+    cy.get('input[placeholder="Ask something..."]').type('Hello AI{enter}');
+    cy.contains('You said: "Hello AI"').should('be.visible');
+  });
 });
 
