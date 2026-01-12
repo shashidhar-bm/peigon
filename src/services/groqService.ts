@@ -22,11 +22,16 @@ export interface AppContext {
     response: ApiResponse | null;
 }
 
+export type ToolResponse = {
+    role: 'assistant';
+    content: string | null;
+    tool_calls?: any[];
+};
+
 export const getGroqCompletion = async (
-    message: string,
-    history: { role: 'user' | 'assistant', content: string }[],
+    history: any[],
     context: AppContext
-) => {
+): Promise<ToolResponse> => {
     try {
         const groq = getGroqClient();
 
@@ -51,28 +56,76 @@ ${JSON.stringify({
         }, null, 2)}
 `;
 
-        const chatCompletion = await groq.chat.completions.create({
-            messages: [
-                {
-                    role: 'system',
-                    content: `You are Peigen AI, a helpful assistant for Peigen, an API testing tool. 
-You help users with API requests, debugging, and general programming questions. 
+        const tools: any[] = [
+            {
+                type: 'function',
+                function: {
+                    name: 'update_request',
+                    description: 'Update the fields of the current API request.',
+                    parameters: {
+                        type: 'object',
+                        properties: {
+                            url: { type: 'string', description: 'The API URL to set.' },
+                            method: { type: 'string', enum: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], description: 'The HTTP method.' },
+                            headers: { type: 'array', items: { type: 'object', properties: { key: { type: 'string' }, value: { type: 'string' }, enabled: { type: 'boolean' } } } },
+                            params: { type: 'array', items: { type: 'object', properties: { key: { type: 'string' }, value: { type: 'string' }, enabled: { type: 'boolean' } } } },
+                            body: {
+                                type: 'object',
+                                properties: {
+                                    type: { type: 'string', enum: ['none', 'json', 'formData', 'raw', 'urlencoded'] },
+                                    raw: { type: 'string' },
+                                    json: { type: 'string', description: 'JSON string for body content' }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                type: 'function',
+                function: {
+                    name: 'send_active_request',
+                    description: 'Execute the current active API request and return the response.'
+                }
+            }
+        ];
+
+        const messages: any[] = [
+            {
+                role: 'system',
+                content: `You are Peigen AI, an agentic assistant for Peigen, an API testing tool. 
+You can autonomously interact with the application to help the user.
 You have access to the CURRENT state of the user's active request and response. 
-Use this context to answer questions specifically about what they are doing.
-Format your responses clearly using Markdown.
+
+AGENTIC CAPABILITIES:
+1. You can update the request using 'update_request'.
+2. You can send the request to get actual results using 'send_active_request'.
+
+GUIDELINES:
+- If a user asks to "test", "run", "send", or "update" a URL, use your tools.
+- After sending a request, analyze the response and explain it to the user.
+- When providing code or configuration, ALWAYS use Markdown code blocks with the correct language tag (e.g., \`\`\`typescript).
+- The chat UI supports syntax highlighting and has a built-in copy button for code blocks.
+- Be concise, professional, and act as a senior software engineer.
 
 ${contextString}`
-                },
-                ...history,
-                {
-                    role: 'user',
-                    content: message
-                }
-            ],
+            },
+            ...history
+        ];
+
+        const chatCompletion = await groq.chat.completions.create({
+            messages,
             model: 'llama-3.3-70b-versatile',
+            tools,
+            tool_choice: 'auto',
         });
 
-        return chatCompletion.choices[0]?.message?.content || '';
+        const choice = chatCompletion.choices[0].message;
+        return {
+            role: 'assistant',
+            content: choice.content,
+            tool_calls: choice.tool_calls
+        };
     } catch (error) {
         console.error('Groq API Error:', error);
         throw new Error('Failed to get response from Groq AI');

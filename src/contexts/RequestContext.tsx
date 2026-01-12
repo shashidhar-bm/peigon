@@ -10,7 +10,7 @@ interface RequestContextType {
   isLoading: boolean;
   setCurrentRequest: (request: ApiRequest) => void;
   updateRequest: (updates: Partial<ApiRequest>) => void;
-  sendRequest: (variables?: Record<string, string>) => Promise<ApiResponse>;
+  sendRequest: (variables?: Record<string, string>, request?: ApiRequest) => Promise<ApiResponse>;
   clearResponse: () => void;
   resetRequest: () => void;
   setResponse: (response: ApiResponse) => void;
@@ -47,8 +47,8 @@ export const RequestProvider: React.FC<RequestProviderProps> = ({ children }) =>
     }));
   }, []);
 
-  const sendRequest = useCallback(async (variables: Record<string, string> = {}) => {
-    return await sendApiRequest(currentRequest, variables);
+  const sendRequest = useCallback(async (variables: Record<string, string> = {}, request?: ApiRequest) => {
+    return await sendApiRequest(request || currentRequest, variables);
   }, [currentRequest, sendApiRequest]);
 
   const resetRequest = useCallback(() => {
