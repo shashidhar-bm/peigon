@@ -1,4 +1,5 @@
 export * from './storageService';
+export * from './groqService';
 export * from './apiService';
 export * from './collectionService';
 export * from './environmentService';
