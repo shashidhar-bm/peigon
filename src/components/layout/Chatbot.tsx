@@ -2,7 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import ReactMarkdown from 'react-markdown';
 import { Button, Input } from '../common';
-import { getGroqCompletion } from '../../services';
+import { getGroqCompletion, AppContext } from '../../services';
+import { useRequestContext } from '../../contexts';
 
 const ChatContainer = styled.div`
   display: flex;
@@ -115,6 +116,7 @@ export const Chatbot: React.FC = () => {
     const [inputValue, setInputValue] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const messageEndRef = useRef<HTMLDivElement>(null);
+    const { currentRequest, response } = useRequestContext();
 
     const scrollToBottom = () => {
         messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -145,7 +147,12 @@ export const Chatbot: React.FC = () => {
                 content: msg.text,
             }));
 
-            const aiResponse = await getGroqCompletion(currentInput, history);
+            const context: AppContext = {
+                currentRequest,
+                response
+            };
+
+            const aiResponse = await getGroqCompletion(currentInput, history, context);
 
             const aiMessage: Message = {
                 id: (Date.now() + 1).toString(),
