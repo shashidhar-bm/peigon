@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from 'uuid';
 import { ApiResponse } from '../types/response.types';
 import { SavedResponse, ComparisonResult } from '../types/comparison.types';
 import { storageService } from './storageService';
@@ -17,7 +16,7 @@ class ComparisonService {
         requestMethod: string
     ): SavedResponse {
         const savedResponse: SavedResponse = {
-            id: uuidv4(),
+            id: crypto.randomUUID(),
             name,
             response,
             savedAt: new Date().toISOString(),

@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import ReactMarkdown from 'react-markdown';
-import { v4 as uuidv4 } from 'uuid';
 import { Button, Input } from '../common';
 import { getGroqCompletion, AppContext } from '../../services';
 import { useRequestContext } from '../../contexts';
@@ -198,7 +197,7 @@ export const Chatbot: React.FC = () => {
 
         const currentInput = inputValue;
         const userMessage: Message = {
-            id: uuidv4(),
+            id: crypto.randomUUID(),
             text: currentInput,
             isUser: true,
             timestamp: new Date(),
@@ -239,7 +238,7 @@ export const Chatbot: React.FC = () => {
 
                     if (aiResponse.content) {
                         const assistantMsg: Message = {
-                            id: uuidv4(),
+                            id: crypto.randomUUID(),
                             text: aiResponse.content,
                             isUser: false,
                             timestamp: new Date(),
@@ -256,7 +255,7 @@ export const Chatbot: React.FC = () => {
 
                         if (name === 'update_request') {
                             const systemMsg: Message = {
-                                id: uuidv4(),
+                                id: crypto.randomUUID(),
                                 text: `AI action: Updating request configuration...`,
                                 isUser: false,
                                 isSystem: true,
@@ -270,7 +269,7 @@ export const Chatbot: React.FC = () => {
                             result = 'Request updated successfully.';
                         } else if (name === 'send_active_request') {
                             const systemMsg: Message = {
-                                id: uuidv4(),
+                                id: crypto.randomUUID(),
                                 text: `AI action: Sending API request...`,
                                 isUser: false,
                                 isSystem: true,
@@ -295,7 +294,7 @@ export const Chatbot: React.FC = () => {
                     }
                 } else {
                     const finalAssistantMsg: Message = {
-                        id: uuidv4(),
+                        id: crypto.randomUUID(),
                         text: aiResponse.content || '',
                         isUser: false,
                         timestamp: new Date(),
@@ -307,7 +306,7 @@ export const Chatbot: React.FC = () => {
             }
         } catch (error: any) {
             const errorMessage: Message = {
-                id: uuidv4(),
+                id: crypto.randomUUID(),
                 text: `Error: ${error.message || 'I encountered an issue. Please check your API key or connection.'}`,
                 isUser: false,
                 timestamp: new Date(),

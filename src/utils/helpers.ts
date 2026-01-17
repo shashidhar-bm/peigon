@@ -1,8 +1,5 @@
-import { v4 as uuidv4 } from 'uuid';
-import { ApiRequest, HttpMethod, KeyValuePair } from '../types';
-
 export const generateId = (): string => {
-  return uuidv4();
+  return crypto.randomUUID();
 };
 
 export const generateShortId = (): string => {
@@ -11,7 +8,7 @@ export const generateShortId = (): string => {
 
 export const createEmptyRequest = (name: string = 'New Request'): ApiRequest => {
   const now = new Date().toISOString();
-  
+
   return {
     id: generateId(),
     name,
@@ -50,7 +47,7 @@ export const cloneRequest = (request: ApiRequest, newName?: string): ApiRequest 
 };
 
 export const deepClone = <T>(obj: T): T => {
-  return JSON.parse(JSON.stringify(obj));
+  return structuredClone(obj);
 };
 
 export const debounce = <T extends (...args: any[]) => any>(
@@ -58,7 +55,7 @@ export const debounce = <T extends (...args: any[]) => any>(
   delay: number
 ): ((...args: Parameters<T>) => void) => {
   let timeoutId: NodeJS.Timeout;
-  
+
   return (...args: Parameters<T>) => {
     clearTimeout(timeoutId);
     timeoutId = setTimeout(() => func(...args), delay);
@@ -70,7 +67,7 @@ export const throttle = <T extends (...args: any[]) => any>(
   limit: number
 ): ((...args: Parameters<T>) => void) => {
   let inThrottle: boolean;
-  
+
   return (...args: Parameters<T>) => {
     if (!inThrottle) {
       func(...args);
@@ -84,14 +81,14 @@ export const downloadJson = (data: any, filename: string): void => {
   const jsonStr = JSON.stringify(data, null, 2);
   const blob = new Blob([jsonStr], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
-  
+
   const link = document.createElement('a');
   link.href = url;
   link.download = filename;
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
-  
+
   URL.revokeObjectURL(url);
 };
 

@@ -171,7 +171,7 @@ class ApiService {
   private calculateResponseSize(response: AxiosResponse): number {
     try {
       const dataStr = JSON.stringify(response.data);
-      return new Blob([dataStr]).size;
+      return new TextEncoder().encode(dataStr).length;
     } catch {
       return 0;
     }

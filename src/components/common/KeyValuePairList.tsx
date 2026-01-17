@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { KeyValuePair } from '../../types';
 import { Button, Input } from './';
-import { v4 as uuidv4 } from 'uuid';
+
 
 interface KeyValuePairListProps {
     pairs: KeyValuePair[];
@@ -45,7 +45,7 @@ export const KeyValuePairList: React.FC<KeyValuePairListProps> = ({
 }) => {
     const handleAdd = () => {
         const newPair: KeyValuePair = {
-            id: uuidv4(),
+            id: crypto.randomUUID(),
             key: '',
             value: '',
             enabled: true,
