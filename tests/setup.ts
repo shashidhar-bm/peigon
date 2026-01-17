@@ -42,3 +42,32 @@ global.fetch = jest.fn();
 global.console.error = jest.fn();
 global.console.warn = jest.fn();
 
+// Polyfill for crypto.randomUUID
+if (!global.crypto) {
+  // @ts-ignore
+  Object.defineProperty(global, 'crypto', {
+    value: {
+      randomUUID: () => {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+          var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+          return v.toString(16);
+        });
+      }
+    }
+  });
+} else if (!global.crypto.randomUUID) {
+  // @ts-ignore
+  global.crypto.randomUUID = () => {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+      var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  };
+}
+
+// Polyfill for TextEncoder if missing
+import { TextEncoder as UtilTextEncoder } from 'util';
+if (typeof global.TextEncoder === 'undefined') {
+  global.TextEncoder = UtilTextEncoder as any;
+}
+
