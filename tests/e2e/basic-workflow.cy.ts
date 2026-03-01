@@ -62,8 +62,25 @@ describe('Basic Workflow', () => {
   it('should open the chatbot', () => {
     cy.contains('button', 'Chat').click();
     cy.contains("Hello! I'm Peigen AI").should('be.visible');
-    cy.get('input[placeholder="Ask something..."]').type('Hello AI{enter}');
-    cy.contains('You said: "Hello AI"').should('be.visible');
+
+    // Intercept the Groq API call
+    cy.intercept('POST', 'https://api.groq.com/openai/v1/chat/completions', {
+      statusCode: 200,
+      body: {
+        choices: [
+          {
+            message: {
+              content: 'Hello! How can I help you?',
+              role: 'assistant',
+            },
+          },
+        ],
+      },
+    }).as('groqChat');
+
+    cy.get('input[placeholder="E.g., Test the users API..."]').type('Hello AI{enter}');
+    cy.wait('@groqChat');
+    cy.contains('Hello! How can I help you?').should('be.visible');
   });
 });
 
