@@ -76,11 +76,14 @@ jobs:
       - name: Install dependencies
         run: npm ci
       
-      - name: Start development server
-        run: npm start &
-        
+      - name: Build application
+        run: npm run build
+      
+      - name: Start static server
+        run: npx serve -s build -l 3000 &
+      
       - name: Wait for server to be ready
-        run: npx wait-on http://localhost:3000 -t 60000
+        run: npx wait-on http://localhost:3000 -t 30000
       
       - name: Run Cypress tests
         run: npm run test:e2e:headless
@@ -90,7 +93,7 @@ jobs:
         if: failure()
         with:
           name: cypress-screenshots
-          path: cypress/screenshots/
+          path: tests/e2e/screenshots/
           retention-days: 7
       
       - name: Upload Cypress videos
@@ -98,7 +101,7 @@ jobs:
         if: failure()
         with:
           name: cypress-videos
-          path: cypress/videos/
+          path: tests/e2e/videos/
           retention-days: 7
 
   build:
