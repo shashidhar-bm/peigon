@@ -78,6 +78,8 @@ jobs:
       
       - name: Build application
         run: npm run build
+        env:
+          REACT_APP_GROQ_API_KEY: fake-key-for-ci-e2e-tests
       
       - name: Start static server
         run: npx serve -s build -l 3000 &
